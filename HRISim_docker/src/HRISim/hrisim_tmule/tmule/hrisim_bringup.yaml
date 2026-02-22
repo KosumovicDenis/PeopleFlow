@@ -39,7 +39,7 @@ init_cmd: |
 
   # world arguments
   # choose a map between: maze, maze_corridor, maze_corridor_withTurn, maze_corridor_withDoors
-  export_default WORLD "warehouse"
+  export_default WORLD "test_dk"
 
   # navigation specific arguments
   export_default GLOBAL_PLANNER "global_planner"
@@ -56,12 +56,12 @@ init_cmd: |
   # robot_mode == 0: CONTROLLED implies that the robot's velocity is set by some planning algorithm like DWA. Its very similar to the teleoperation mode, using tf in the mix is just a layer on top of this -->
   # robot_mode == 1: TELEOPERATION , we map the output of a teleop node (like joystick) to drive the robot -->
   # robot_mode == 2: SOCIAL mode means the robot's velocity is set by the social force just like the other agents -->
-  export_default SCENARIO "warehouse"
+  export_default SCENARIO "test_dk_scenario"
   export_default ALLOW_TASK "true"
   export_default STARTING_ELAPSED "8"
   export_default MAX_TASKTIME "60"
   export_default IS_STUCK_THRESHOLD "65"
-  export_default ROBOT_MODE "1"
+  export_default ROBOT_MODE "0"
   export_default MAX_HUMAN_SPEED "1.5"
   export_default ROBOT_RADIUS "5"
   export_default SPAWN_AGENT "true"
