@@ -3,5 +3,52 @@
   <world name="default">
     <include><uri>model://sun</uri></include>
     <include><uri>model://ground_plane</uri></include>
+
+    <model name="room_8x14_with_pillars">
+      <static>true</static>
+
+      <link name="floor">
+        <pose>0 0 0.001 0 0 0</pose>
+        <collision name="collision"><geometry><box><size>8 14 0.01</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>8 14 0.01</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/CeilingTiled</name></script></material>
+        </visual>
+      </link>
+      
+      <link name="wall_north">
+        <pose>0 7.1 1 0 0 0</pose>
+        <collision name="collision"><geometry><box><size>8.4 0.2 2</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>8.4 0.2 2</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/PaintedWall</name></script></material></visual>
+      </link>
+      <link name="wall_south">
+        <pose>0 -7.1 1 0 0 0</pose>
+        <collision name="collision"><geometry><box><size>8.4 0.2 2</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>8.4 0.2 2</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/PaintedWall</name></script></material></visual>
+      </link>
+      <link name="wall_east">
+        <pose>4.1 0 1 0 0 0</pose>
+        <collision name="collision"><geometry><box><size>0.2 14 2</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.2 14 2</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/PaintedWall</name></script></material></visual>
+      </link>
+      <link name="wall_west">
+        <pose>-4.1 0 1 0 0 0</pose>
+        <collision name="collision"><geometry><box><size>0.2 14 2</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.2 14 2</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/PaintedWall</name></script></material></visual>
+      </link>
+
+      <link name="pillar_1">
+        <pose>-1.5 3 1 0 0 0</pose>
+        <collision name="collision"><geometry><box><size>0.6 0.6 2</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.6 0.6 2</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Bricks</name></script></material></visual>
+      </link>
+
+      <link name="pillar_2">
+        <pose>1.5 -3 1 0 0 0</pose>
+        <collision name="collision"><geometry><box><size>0.6 0.6 2</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.6 0.6 2</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Bricks</name></script></material></visual>
+      </link>
+      
+    </model>
   </world>
 </sdf>

@@ -1,25 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
-    <obstacle x1="-10" y1="-10" x2="10" y2="-10"/>
-    <obstacle x1="10" y1="-10" x2="10" y2="10"/>
-    <obstacle x1="10" y1="10" x2="-10" y2="10"/>
-    <obstacle x1="-10" y1="10" x2="-10" y2="-10"/>
+    <obstacle x1="-4.0" y1="7.0" x2="4.0" y2="7.0"/>
+    <obstacle x1="-4.0" y1="-7.0" x2="4.0" y2="-7.0"/>
+    <obstacle x1="4.0" y1="-7.0" x2="4.0" y2="7.0"/>
+    <obstacle x1="-4.0" y1="-7.0" x2="-4.0" y2="7.0"/>
 
-    <waypoint id="parking" x="-5" y="1.5" r="1.5"/>
-    <waypoint id="office-1" x="5" y="1.5" r="1.5"/>
+    <obstacle x1="-1.8" y1="2.7" x2="-1.2" y2="3.3"/>
+    <obstacle x1="1.2" y1="-3.3" x2="1.8" y2="-2.7"/>
 
-    <agent x="-5.0" y="1.5" n="1" dx="0.5" dy="0.5" type="0">
-        <addwaypoint id="office-1"/>
+    <waypoint id="wp_TL" x="-2.5" y="5.0" r="1.0"/>
+    <waypoint id="wp_TR" x="2.5" y="5.0" r="1.0"/>
+    <waypoint id="wp_BL" x="-2.5" y="-5.0" r="1.0"/>
+    <waypoint id="wp_BR" x="2.5" y="-5.0" r="1.0"/>
+
+    <agent x="-2.5" y="5.0" n="1" dx="0.5" dy="0.5" type="0">
+        <addwaypoint id="wp_BR"/>
     </agent>
-    
-    <agent x="5.0" y="-1.5" n="1" dx="0.5" dy="0.5" type="0">
-        <addwaypoint id="parking"/>
+    <agent x="2.5" y="5.0" n="1" dx="0.5" dy="0.5" type="0">
+        <addwaypoint id="wp_BL"/>
+    </agent>
+
+    <agent x="$TIAGO_x" y="$TIAGO_y" n="1" dx="0" dy="0" type="2">
     </agent>
 
     <schedule>
         <time name="test_session" duration="3600000">
-            <adddest name="parking" p="0.5" std="0" />
-            <adddest name="office-1" p="0.5" std="0" />
+            <adddest name="wp_TL" p="0.25" std="0" />
+            <adddest name="wp_TR" p="0.25" std="0" />
+            <adddest name="wp_BL" p="0.25" std="0" />
+            <adddest name="wp_BR" p="0.25" std="0" />
         </time>
     </schedule>
 </scenario>
