@@ -10,25 +10,45 @@
 
     <waypoint id="wp_TL" x="-2.5" y="5.0" r="1.0"/>
     <waypoint id="wp_TR" x="2.5" y="5.0" r="1.0"/>
-    <waypoint id="wp_BL" x="-2.5" y="-5.0" r="1.0"/>
-    <waypoint id="wp_BR" x="2.5" y="-5.0" r="1.0"/>
+    <waypoint id="wp_BL" x="-3.5" y="-5.0" r="1.0"/>
+    <waypoint id="wp_BR" x="3.5" y="-5.0" r="1.0"/>
+    <waypoint id="parking" x="0.0" y="6.0" r="1.0"/>
+    <waypoint id="charging-station" x="0.0" y="-6.0" r="1.0"/>
 
-    <agent x="-2.5" y="5.0" n="1" dx="0.5" dy="0.5" type="0">
-        <addwaypoint id="wp_BR"/>
-    </agent>
-    <agent x="2.5" y="5.0" n="1" dx="0.5" dy="0.5" type="0">
+    <agent x="-2.5" y="5.0" n="1" dx="0" dy="0" type="0">
+        <addwaypoint id="wp_TL"/>
         <addwaypoint id="wp_BL"/>
+        <addwaypoint id="parking"/>
+        <addwaypoint id="charging-station"/>
+    </agent>
+
+    <agent x="2.5" y="5.0" n="1" dx="0" dy="0" type="0">
+        <addwaypoint id="wp_TR"/>
+        <addwaypoint id="wp_BR"/>
+        <addwaypoint id="parking"/>
+        <addwaypoint id="charging-station"/>
     </agent>
 
     <agent x="$TIAGO_x" y="$TIAGO_y" n="1" dx="0" dy="0" type="2">
     </agent>
 
     <schedule>
-        <time name="test_session" duration="3600000">
-            <adddest name="wp_TL" p="0.25" std="0" />
-            <adddest name="wp_TR" p="0.25" std="0" />
-            <adddest name="wp_BL" p="0.25" std="0" />
-            <adddest name="wp_BR" p="0.25" std="0" />
+        <time name="H1" duration="100">
+            <adddest name="wp_TL" p="0.5" std="0" />
+            <adddest name="wp_TR" p="0.5" std="0" />
+            <adddest name="wp_BL" p="0.5" std="0" />
+            <adddest name="wp_BR" p="0.5" std="0" />
+            <adddest name="parking" p="0" std="0" />
+            <adddest name="charging-station" p="0" std="0" />
+        </time>
+        
+        <time name="H2" duration="200">
+            <adddest name="wp_TL" p="0.5" std="0" />
+            <adddest name="wp_TR" p="0.5" std="0" />
+            <adddest name="wp_BL" p="0.5" std="0" />
+            <adddest name="wp_BR" p="0.5" std="0" />
+            <adddest name="parking" p="0" std="0" />
+            <adddest name="charging-station" p="0" std="0" />
         </time>
     </schedule>
 </scenario>

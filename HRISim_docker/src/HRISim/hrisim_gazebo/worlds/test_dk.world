@@ -4,6 +4,8 @@
     <include><uri>model://sun</uri></include>
     <include><uri>model://ground_plane</uri></include>
 
+    <plugin name='ActorPosesPlugin' filename='libActorPosesPlugin.so'/>
+
     <model name="room_8x14_with_pillars">
       <static>true</static>
 

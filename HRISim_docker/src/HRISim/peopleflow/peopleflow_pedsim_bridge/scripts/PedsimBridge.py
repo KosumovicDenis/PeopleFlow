@@ -62,7 +62,7 @@ class PedsimBridge():
             # Entrance logic
             if (self.timeOfDay == constants.TOD.H1.value and not agent.atWork and 
                 agent.isFree and not agent.isQuitting and 
-                agent.closestWP == constants.WP.PARKING.value):
+                True):
                     
                 # startingTime definition
                 # next_destination response: 

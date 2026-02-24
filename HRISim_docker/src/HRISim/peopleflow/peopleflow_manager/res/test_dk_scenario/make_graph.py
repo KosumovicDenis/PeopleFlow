@@ -3,21 +3,23 @@ import pickle
 
 G = nx.Graph()
 
-# Nodi reali
+# Assegniamo coordinate REALI anche a Parking e Charging Station
 nodi_reali = {
     'wp_TL': (-2.5, 5.0),
     'wp_TR': (2.5, 5.0),
-    'wp_BL': (-2.5, -5.0),
-    'wp_BR': (2.5, -5.0)
+    'wp_BL': (-3.5, -5.0),
+    'wp_BR': (3.5, -5.0),
+    'parking': (0.0, 6.0),           # In alto al centro
+    'charging-station': (0.0, -6.0)  # In basso al centro
 }
+
 for name, pos in nodi_reali.items():
-    G.add_node(name, pos=pos, name=name, type='waypoint')
+    if name in ['parking', 'charging-station']:
+        G.add_node(name, pos=pos, name=name, type='station')
+    else:
+        G.add_node(name, pos=pos, name=name, type='waypoint')
 
-# Nodi fantasma
-G.add_node('charging-station', pos=(0.0, 0.0), name='charging-station', type='station')
-G.add_node('parking', pos=(0.0, 0.0), name='parking', type='station')
-
-# IL FIX: Colleghiamo TUTTI i nodi tra loro per far funzionare il Traveling Salesman Problem!
+# Connettiamo tutto
 all_nodes = list(G.nodes())
 for n1 in all_nodes:
     for n2 in all_nodes:
@@ -27,4 +29,4 @@ for n1 in all_nodes:
 with open('graph.pkl', 'wb') as f:
     pickle.dump(G, f)
 
-print("Grafo 4.0: Tutti i nodi connessi. TIAGo_plan è felice!")
+print("Grafo 6.0: Il Parcheggio è ora un luogo reale!")
