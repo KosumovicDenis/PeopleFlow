@@ -110,4 +110,4 @@ windows:
   - name: pedsim
     tags: ['exp']
     panes:
-      - 'roslaunch peopleflow_bringup peopleflow_bringup.launch scenario:=$SCENARIO starting_elapsed:=$STARTING_ELAPSED allow_task:=$ALLOW_TASK max_tasktime:=$MAX_TASKTIME robot_mode:=$ROBOT_MODE max_human_speed:=$MAX_HUMAN_SPEED robot_radius:=$ROBOT_RADIUS is_stuck_threshold:=$IS_STUCK_THRESHOLD force_obstacle:=$FORCE_OBSTACLE sigma_obstacle:=$SIGMA_OBSTACLE force_social:=$FORCE_SOCIAL'
+      - 'roslaunch peopleflow_bringup peopleflow_bringup.launch scenario:=$SCENARIO starting_elapsed:=$STARTING_ELAPSED allow_task:=$ALLOW_TASK max_tasktime:=$MAX_TASKTIME robot_mode:=$ROBOT_MODE max_human_speed:=$MAX_HUMAN_SPEED robot_radius:=$ROBOT_RADIUS is_stuck_threshold:=$IS_STUCK_THRESHOLD force_obstacle:=$FORCE_OBSTACLE sigma_obstacle:=$SIGMA_OBSTACLE force_social:=$FORCE_SOCIAL bridge_type:="SoldierBridge.py"'

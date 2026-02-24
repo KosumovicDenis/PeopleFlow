@@ -1,4 +1,5 @@
 <launch>
+    <arg name="bridge_type" default="PedsimBridge.py" />
     <arg name="scenario"                />
     <arg name="starting_elapsed"        default="8" />
     <arg name="allow_task"              default="true" />
@@ -16,6 +17,7 @@
         <arg name="starting_elapsed"    value="$(arg starting_elapsed)" />
     </include>
     <include file="$(find peopleflow_pedsim_bridge)/launch/peopleflow_pedsim.launch">
+        <arg name="bridge_type"         value="$(arg bridge_type)" />
         <arg name="scenario"            value="$(arg scenario)" />
         <arg name="allow_task"          value="$(arg allow_task)" />
         <arg name="max_tasktime"        value="$(arg max_tasktime)" />
@@ -32,5 +34,4 @@
     </include>
 
     <node name="peopleflow_counter" pkg="peopleflow_counter" type="PeopleCounter.py" output="screen" />
-
 </launch>
