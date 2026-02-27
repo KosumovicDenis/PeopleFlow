@@ -67,7 +67,7 @@ init_cmd: |
   export_default SPAWN_AGENT "true"
   export_default SPAWN_TELEOP_AGENT "false"
   export_default SPAWN_TIMEOUT "10.0"
-  export_default FORCE_OBSTACLE "5.0"
+  export_default FORCE_OBSTACLE "1.0" # 5.0
   export_default SIGMA_OBSTACLE "0.25"
   export_default FORCE_SOCIAL "10.0"
 

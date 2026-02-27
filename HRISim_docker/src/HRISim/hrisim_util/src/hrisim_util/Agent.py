@@ -141,7 +141,7 @@ class Agent:
     def selectDestination(self, selected_time, potential_dests):
         destinations = self.schedule[selected_time]['dests']
         #! I am commenting this line to allow the agents to select the same destination
-        # if self.pastFinalDest is not None and self.pastFinalDest != 'delivery_point': potential_dests.remove(self.pastFinalDest)
+        if self.pastFinalDest is not None: potential_dests.remove(self.pastFinalDest)
         
         # Generate probabilities
         tmp_dest = []
