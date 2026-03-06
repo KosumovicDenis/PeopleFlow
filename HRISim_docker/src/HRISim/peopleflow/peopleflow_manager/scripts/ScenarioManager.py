@@ -64,12 +64,22 @@ class ScenarioManager():
         root = tree.getroot()
         
         # Parse schedule
-        for time in root.find('schedule').findall('time'):
-            tmp = Time(time.get('name'), float(time.get('duration')))
-            for adddest in time.findall('adddest'):
-                dest_name = adddest.get('name')
-                tmp.dests[dest_name] = {'mean': float(adddest.get('p')), 'std': float(adddest.get('std'))}
-            self.schedule[tmp.name] = tmp
+        schedule_node = root.find('schedule')
+        if schedule_node is not None:
+            for time_node in schedule_node.findall('time'):
+                name = time_node.get('name')
+                duration = float(time_node.get('duration'))
+                dests = {}
+                for adddest in time_node.findall('adddest'):
+                    dest_name = adddest.get('name')
+                    dests[dest_name] = {'mean': float(adddest.get('p')), 'std': float(adddest.get('std'))}
+                
+                # Store as dict for ROS param compatibility
+                self.schedule[name] = {
+                    'name': name,
+                    'duration': duration,
+                    'dests': dests
+                }
         
         self.wps = {}
         for waypoint in root.findall('waypoint'):

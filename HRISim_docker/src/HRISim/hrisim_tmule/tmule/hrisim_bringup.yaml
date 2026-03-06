@@ -38,14 +38,14 @@ init_cmd: |
   export_default ABORT_TIME_THRESHOLD "45"
 
   # world arguments
-  # choose a map between: maze, maze_corridor, maze_corridor_withTurn, maze_corridor_withDoors
-  export_default WORLD "warehouse"
+  # choose a map between: tesi_stanza1, maze, maze_corridor, warehouse
+  export_default WORLD "tesi_stanza1"
 
   # navigation specific arguments
   export_default GLOBAL_PLANNER "global_planner"
   export_default LOCAL_PLANNER "teb"
   export_default LOCALIZATION "amcl"
-  export_default MAP "$HOME/.pal/tiago_maps/configurations/$WORLD"
+  export_default MAP "$CATKIN_WS/src/HRISim/hrisim_gazebo/tiago_maps/$WORLD/map.yaml"
 
   # PNP specific arguments
   export_default PNP_PLANS "$CATKIN_WS/src/HRISim/hrisim_plans"
@@ -56,7 +56,7 @@ init_cmd: |
   # robot_mode == 0: CONTROLLED implies that the robot's velocity is set by some planning algorithm like DWA. Its very similar to the teleoperation mode, using tf in the mix is just a layer on top of this -->
   # robot_mode == 1: TELEOPERATION , we map the output of a teleop node (like joystick) to drive the robot -->
   # robot_mode == 2: SOCIAL mode means the robot's velocity is set by the social force just like the other agents -->
-  export_default SCENARIO "warehouse"
+  export_default SCENARIO "tesi_stanza1_scenario"
   export_default ALLOW_TASK "true"
   export_default STARTING_ELAPSED "8"
   export_default MAX_TASKTIME "60"

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <!-- 1. SCHEDULE (Dummy for ScenarioManager.py) -->
+    <schedule>
+        <time name="ALWAYS" duration="86400">
+            <adddest name="WP_A1" p="0.25" std="1.0"/>
+            <adddest name="WP_A2" p="0.25" std="1.0"/>
+            <adddest name="WP_B1" p="0.25" std="1.0"/>
+            <adddest name="WP_B2" p="0.25" std="1.0"/>
+        </time>
+    </schedule>
+
+    <!-- 2. PERIMETRO ESTERNO (Stanza 10x10) -->
+    <!-- Sud -->
+    <obstacle x1="-5.0" y1="-5.0" x2="5.0" y2="-5.0"/>
+    <!-- Est -->
+    <obstacle x1="5.0" y1="-5.0" x2="5.0" y2="4.0"/>
+    <!-- Nord -->
+    <obstacle x1="-5.0" y1="5.0" x2="4.0" y2="5.0"/>
+    <!-- Angolo Tondo (NE) - Approssimato -->
+    <obstacle x1="4.0" y1="5.0" x2="4.7" y2="4.7"/>
+    <obstacle x1="4.7" y1="4.7" x2="5.0" y2="4.0"/>
+
+    <!-- 3. PARETE A ZIG-ZAG (Ovest) -->
+    <obstacle x1="-5.0" y1="5.0" x2="-4.0" y2="2.5"/>
+    <obstacle x1="-4.0" y1="2.5" x2="-5.0" y2="0.0"/>
+    <obstacle x1="-5.0" y1="0.0" x2="-4.0" y2="-2.5"/>
+    <obstacle x1="-4.0" y1="-2.5" x2="-5.0" y2="-5.0"/>
+
+    <!-- 4. WAYPOINTS -->
+    <waypoint id="WP_A1" x="-4.0" y="4.0" r="0.5"/>
+    <waypoint id="WP_A2" x="4.0" y="4.0" r="0.5"/>
+    <waypoint id="WP_B1" x="-4.0" y="-4.0" r="0.5"/>
+    <waypoint id="WP_B2" x="4.0" y="-4.0" r="0.5"/>
+
+    <!-- 5. AGENTI -->
+    <agent x="-4.2" y="4.2" n="1" dx="0.2" dy="0.2" type="1">
+        <addwaypoint id="WP_A1"/>
+        <addwaypoint id="WP_A2"/>
+    </agent>
+
+    <agent x="4.2" y="-4.2" n="1" dx="0.2" dy="0.2" type="1">
+        <addwaypoint id="WP_B1"/>
+        <addwaypoint id="WP_B2"/>
+    </agent>
+</scenario>

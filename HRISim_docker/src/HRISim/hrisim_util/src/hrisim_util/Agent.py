@@ -8,12 +8,10 @@ DEFAULT_VALUE = -1000
 CONSECUTIVE_STUCK_THRESHOLD = 2
 
 class Agent:
-    def __init__(self, id, schedule, graph, allowTask, maxTaskTime) -> None:
+    def __init__(self, id, schedule, graph) -> None:
         self.id = id
         self.schedule = schedule
         self.G = graph
-        self.allowTask = allowTask
-        self.maxTaskTime = maxTaskTime
         self.x = None
         self.y = None
         self.path = []
@@ -24,10 +22,6 @@ class Agent:
         self.nextDest = None
         self.nextDestPos = None
         self.nextDestRadius = None
-        self.startingTime = None
-        self.exitTime = None
-        self.atWork = False
-        self.isQuitting = False
         self.isStuck = False
         self.taskDuration = None
         self.nConsecutiveStuck = 0
@@ -100,18 +94,14 @@ class Agent:
             'nextDest': self.nextDest if self.nextDest is not None else '',
             'nextDestPos': self.nextDestPos if self.nextDestPos is not None else [DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE],
             'nextDestRadius': self.nextDestRadius if self.nextDestRadius is not None else DEFAULT_VALUE,
-            'startingTime': self.startingTime if self.startingTime is not None else DEFAULT_VALUE,
-            'exitTime': self.exitTime if self.exitTime is not None else DEFAULT_VALUE,
-            'atWork': self.atWork,
-            'isQuitting': self.isQuitting,
             'isStuck': self.isStuck,
             'taskDuration': self.taskDuration if self.taskDuration is not None else DEFAULT_VALUE
         }
 
     @classmethod
-    def from_dict(cls, data, schedule, graph, allowTask, maxTaskTime):
+    def from_dict(cls, data, schedule, graph):
         """Deserialize a dictionary to an Agent object."""
-        agent = cls(data['id'], schedule, graph, allowTask, maxTaskTime)
+        agent = cls(data['id'], schedule, graph)
         agent.x = data['x'] if data['x'] != DEFAULT_VALUE else None
         agent.y = data['y'] if data['y'] != DEFAULT_VALUE else None
         agent.path = data['path']
@@ -122,10 +112,6 @@ class Agent:
         agent.nextDest = data['nextDest'] if data['nextDest'] != '' else None
         agent.nextDestPos = data['nextDestPos'] if data['nextDestPos'] != [DEFAULT_VALUE, DEFAULT_VALUE] else None
         agent.nextDestRadius = data['nextDestRadius'] if data['nextDestRadius'] != DEFAULT_VALUE else None
-        agent.startingTime = data['startingTime'] if data['startingTime'] != DEFAULT_VALUE else None
-        agent.exitTime = data['exitTime'] if data['exitTime'] != DEFAULT_VALUE else None
-        agent.atWork = data['atWork']
-        agent.isQuitting = data['isQuitting']
         agent.isStuck = data['isStuck']
         agent.taskDuration = data['taskDuration'] if data['taskDuration'] != DEFAULT_VALUE else None
         return agent
@@ -137,6 +123,18 @@ class Agent:
         return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
 
     def selectDestination(self, selected_time, potential_dests):
+        if selected_time is None or self.schedule is None:
+            # Simple random selection if no time or schedule is provided
+            if self.pastFinalDest in potential_dests:
+                # Still try to exclude the past destination if it's in the potential list
+                dests_to_choose = [d for d in potential_dests if d != self.pastFinalDest]
+                if not dests_to_choose:
+                    dests_to_choose = potential_dests
+            else:
+                dests_to_choose = potential_dests
+            
+            return random.choice(dests_to_choose)
+
         destinations = self.schedule[selected_time]['dests']
         if self.pastFinalDest is not None:
             potential_dests.remove(self.pastFinalDest)
@@ -175,12 +173,3 @@ class Agent:
         self.taskDuration = {wp: 0 for wp in self.path}
         if duration is not None:
             self.taskDuration[self.path[-1]] = duration
-
-    def getTaskDuration(self):
-        if self.allowTask:
-            if self.finalDest.startswith("toilet"):
-                return random.randint(2, 4)
-            else:
-                return random.randint(2, self.maxTaskTime)
-        else:
-            return 0

@@ -1,0 +1,114 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="tesi_stanza1">
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <plugin name='ActorPosesPlugin' filename='libActorPosesPlugin.so'/>
+
+    <!-- 1. PARETE SUD (Normale) -->
+    <model name="wall_south">
+      <static>true</static>
+      <link name="link">
+        <pose>0 -5 1.0 0 0 0</pose>
+        <collision name="collision"><geometry><box><size>10 0.2 2.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>10 0.2 2.0</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Grey</name></script></material></visual>
+      </link>
+    </model>
+
+    <!-- 2. PARETE EST (Normale - parte dritta) -->
+    <model name="wall_east">
+      <static>true</static>
+      <link name="link">
+        <pose>5 -0.5 1.0 0 0 1.5708</pose>
+        <collision name="collision"><geometry><box><size>9 0.2 2.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>9 0.2 2.0</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Grey</name></script></material></visual>
+      </link>
+    </model>
+
+    <!-- 3. PARETE NORD (Normale - parte dritta) -->
+    <model name="wall_north">
+      <static>true</static>
+      <link name="link">
+        <pose>-0.5 5 1.0 0 0 0</pose>
+        <collision name="collision"><geometry><box><size>9 0.2 2.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>9 0.2 2.0</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Grey</name></script></material></visual>
+      </link>
+    </model>
+
+    <!-- 4. ANGOLO ARROTONDATO (Nord-Est) -->
+    <model name="corner_round_1">
+      <static>true</static>
+      <link name="link">
+        <pose>4.3 4.95 1.0 0 0 -0.3</pose>
+        <collision name="collision"><geometry><box><size>0.6 0.2 2.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.6 0.2 2.0</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Grey</name></script></material></visual>
+      </link>
+    </model>
+    <model name="corner_round_2">
+      <static>true</static>
+      <link name="link">
+        <pose>4.7 4.7 1.0 0 0 -0.785</pose>
+        <collision name="collision"><geometry><box><size>0.6 0.2 2.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.6 0.2 2.0</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Grey</name></script></material></visual>
+      </link>
+    </model>
+    <model name="corner_round_3">
+      <static>true</static>
+      <link name="link">
+        <pose>4.95 4.3 1.0 0 0 -1.27</pose>
+        <collision name="collision"><geometry><box><size>0.6 0.2 2.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.6 0.2 2.0</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Grey</name></script></material></visual>
+      </link>
+    </model>
+
+    <!-- 5. PARETE A ZIG-ZAG (Ovest) -->
+    <model name="zigzag_1">
+      <static>true</static>
+      <link name="link">
+        <pose>-4.5 3.75 1.0 0 0 -1.19</pose>
+        <collision name="collision"><geometry><box><size>2.7 0.2 2.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>2.7 0.2 2.0</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Grey</name></script></material></visual>
+      </link>
+    </model>
+    <model name="zigzag_2">
+      <static>true</static>
+      <link name="link">
+        <pose>-4.5 1.25 1.0 0 0 1.19</pose>
+        <collision name="collision"><geometry><box><size>2.7 0.2 2.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>2.7 0.2 2.0</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Grey</name></script></material></visual>
+      </link>
+    </model>
+    <model name="zigzag_3">
+      <static>true</static>
+      <link name="link">
+        <pose>-4.5 -1.25 1.0 0 0 -1.19</pose>
+        <collision name="collision"><geometry><box><size>2.7 0.2 2.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>2.7 0.2 2.0</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Grey</name></script></material></visual>
+      </link>
+    </model>
+    <model name="zigzag_4">
+      <static>true</static>
+      <link name="link">
+        <pose>-4.5 -3.75 1.0 0 0 1.19</pose>
+        <collision name="collision"><geometry><box><size>2.7 0.2 2.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>2.7 0.2 2.0</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Grey</name></script></material></visual>
+      </link>
+    </model>
+
+    <physics type="ode">
+      <real_time_update_rate>1000.0</real_time_update_rate>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <ode>
+        <solver>
+          <type>quick</type>
+          <iters>150</iters>
+        </solver>
+      </ode>
+    </physics>
+  </world>
+</sdf>
