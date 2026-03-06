@@ -45,7 +45,7 @@ init_cmd: |
   export_default GLOBAL_PLANNER "global_planner"
   export_default LOCAL_PLANNER "teb"
   export_default LOCALIZATION "amcl"
-  export_default MAP "$CATKIN_WS/src/HRISim/hrisim_gazebo/tiago_maps/$WORLD/map.yaml"
+  export_default MAP "$CATKIN_WS/src/HRISim/hrisim_gazebo/tiago_maps/$WORLD"
 
   # PNP specific arguments
   export_default PNP_PLANS "$CATKIN_WS/src/HRISim/hrisim_plans"
