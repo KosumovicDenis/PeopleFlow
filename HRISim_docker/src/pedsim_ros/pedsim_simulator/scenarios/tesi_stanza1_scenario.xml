@@ -47,4 +47,8 @@
         <addwaypoint id="WP_B1"/>
         <addwaypoint id="WP_B2"/>
     </agent>
+
+    <dependencies>
+        <dependency waiter_id="2" trigger_id="1" trigger_wp="WP_A2" />
+    </dependencies>
 </scenario>
