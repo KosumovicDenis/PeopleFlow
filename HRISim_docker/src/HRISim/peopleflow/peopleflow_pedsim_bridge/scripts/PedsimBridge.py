@@ -12,14 +12,23 @@ from robot_srvs.srv import VisualisePath
 
 class PedsimBridge():
     def __init__(self, scenario_name):
+        # Data-driven dependencies
+        self.dependencies = {}     
+        self.active_triggers = {} 
+        self.load_dependencies(scenario_name)
+        
+        # CLEAR PERSISTED STATE
+        if rospy.has_param("/peopleflow/agents"):
+            rospy.delete_param("/peopleflow/agents")
+            rospy.loginfo("Cleaned up persisted agent states from parameter server")
+        
+        # Session management: keep track of agents seen in THIS session
+        self.seen_agents = set()
+
         # Service to handle destination requests from agents
+        # Advertised at the end to ensure initialization is complete
         rospy.Service('get_next_destination', GetNextDestination, self.handle_get_next_destination)
         rospy.loginfo('Simplified ROS service /get_next_destination advertised')
-        
-        # Data-driven dependencies
-        self.dependencies = {}     # waiter_id -> {trigger_id, trigger_wp}
-        self.active_triggers = {} # (trigger_id, trigger_wp) -> bool
-        self.load_dependencies(scenario_name)
 
     def load_dependencies(self, scenario_name):
         try:
@@ -50,12 +59,18 @@ class PedsimBridge():
         agent_id = str(req.agent_id)
         agents_param = rospy.get_param(f'/peopleflow/agents/{agent_id}', None)
         
-        # We no longer use SCHEDULE, so we pass None
         if agents_param is not None:
             a = Agent.from_dict(agents_param, None, G)
         else:
             a = Agent(agent_id, None, G)
         
+        # SESSION RESET: If this is the first time we see this agent in this session,
+        # wipe its memory of previous waypoints to avoid ghost triggers.
+        if agent_id not in self.seen_agents:
+            a.pastFinalDest = None
+            self.seen_agents.add(agent_id)
+            rospy.loginfo(f"Agent {agent_id} session initialized")
+
         a.x = req.origin.x
         a.y = req.origin.y
         a.isStuck = req.is_stuck
@@ -67,8 +82,7 @@ class PedsimBridge():
 
     def handle_get_next_destination(self, req):
         """
-        Generic data-driven navigation logic using agent.pastFinalDest (reliable).
-        Exactly replicates the first successful manual implementation.
+        Generic data-driven navigation logic with session-aware reset.
         """
         try:
             # Load agent state
@@ -80,14 +94,14 @@ class PedsimBridge():
             if agent.isFree or agent.isStuck:
                 if not potential_dests:
                     return GetNextDestinationResponse(destination_id="none", destination=req.origin, destination_radius=1.0, task_duration=1.0)
-
-                # 2. WAITER LOGIC
+                # 1. WAITER LOGIC: Check if we can move or must stay idle
                 if agent_id in self.dependencies:
                     dep = self.dependencies[agent_id]
                     trigger_key = (dep['trigger_id'], dep['trigger_wp'])
                     is_triggered = self.active_triggers.get(trigger_key, False)
                     
                     if is_triggered:
+                        # Replicating cycle logic
                         if agent.pastFinalDest == potential_dests[0]:
                             next_destination = potential_dests[1]
                         elif agent.pastFinalDest == potential_dests[1]:
@@ -98,11 +112,12 @@ class PedsimBridge():
                         else:
                             next_destination = potential_dests[0]
                     else:
+                        # NOT TRIGGERED: Stay at idle position
                         next_destination = potential_dests[0]
                         task_duration = 1.0 
                 
                 else:
-                    # 3. NORMAL LOGIC: Continuous Cycle
+                    # 2. NORMAL LOGIC: Continuous Cycle
                     if agent.pastFinalDest in potential_dests:
                         idx = potential_dests.index(agent.pastFinalDest)
                         next_destination = potential_dests[(idx + 1) % len(potential_dests)]
@@ -112,16 +127,14 @@ class PedsimBridge():
                 # Apply the task (updates pastFinalDest to the WP just reached)
                 agent.setTask(next_destination, duration=0, isStuck=agent.isStuck)
                 
-                # 1. TRIGGER LOGIC: Moved AFTER setTask to have updated pastFinalDest
-                for (t_id, t_wp) in self.active_triggers.keys():
-                    if t_id == agent_id and agent.pastFinalDest == t_wp:
-                        self.active_triggers[(t_id, t_wp)] = True
-                        rospy.logwarn(f">>> TRIGGER ACTIVATED: Agent {agent_id} reached {t_wp} <<<")
-
-                if agent_id not in self.dependencies:
-                    rospy.loginfo(f"Agent {agent_id} moving to {next_destination}")
-                elif self.active_triggers.get((self.dependencies[agent_id]['trigger_id'], self.dependencies[agent_id]['trigger_wp']), False):
-                    rospy.loginfo(f"Agent {agent_id} (Waiter) triggered -> {next_destination}")
+                # 3. TRIGGER LOGIC: Set trigger if master reaches target WP
+                # Check for None to avoid start-up trigger from session reset
+                if agent.pastFinalDest is not None:
+                    for (t_id, t_wp) in self.active_triggers.keys():
+                        if t_id == agent_id and agent.pastFinalDest == t_wp:
+                            if not self.active_triggers[(t_id, t_wp)]: # Avoid multiple logs for same arrival
+                                self.active_triggers[(t_id, t_wp)] = True
+                                rospy.logwarn(f">>> TRIGGER ACTIVATED: Agent {agent_id} reached {t_wp} <<<")
 
             # Prepare response
             wpname, wp = agent.nextWP         

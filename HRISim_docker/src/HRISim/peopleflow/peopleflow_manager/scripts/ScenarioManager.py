@@ -33,17 +33,17 @@ class ScenarioManager():
     def timeOfTheDay(self):
         d = 0
         for time in self.schedule:
-            d += self.schedule[time].duration
+            d += self.schedule[time]['duration']
             if self.elapsedTime > d:
                 continue
             else:
-                return self.schedule[time].name
+                return self.schedule[time]['name']
             
     @property
     def elapsedTimeString(self):
         d = 0
         for time in self.schedule:
-            d += self.schedule[time].duration
+            d += self.schedule[time]['duration']
             if self.elapsedTime > d:
                 continue
             else:
