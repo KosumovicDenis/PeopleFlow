@@ -1,41 +1,6 @@
-<!--
-<?xml version="1.0" ?>
-<sdf version="1.5">
-<model name="actor_model">
-  <pose>0 0 0.75 0 0 0</pose>
-  <link name="cylinder_link">
-  <visual name="cylinder_visual">
-  <geometry>
-    <cylinder>
-      <radius>0.25</radius>
-      <length>1.5</length>
-    </cylinder>
-  </geometry>
-  <material>
-    <script>
-      <name>Gazebo/Red</name>
-      <uri>file://media/materials/scripts/gazebo.material</uri>
-    </script>
-  </material>
-  </visual>
-  <collision name="cylinder_collision">
-  <geometry>
-    <cylinder>
-      <radius>0.25</radius>
-      <length>1.5</length>
-    </cylinder>
-  </geometry>
-  </collision>
-  </link>
-</model>
-</sdf>
-
--->
-
 <?xml version='1.0'?>
 <sdf version='1.7'>
-  <model name='actor_model'>
-  <pose>0 0 0.75 0 0 0</pose>
+  <model name='tiago'>
     <link name='base_footprint'>
       <inertial>
         <pose>-0.00978 -0.00152 0.213783 0 -0 0</pose>
