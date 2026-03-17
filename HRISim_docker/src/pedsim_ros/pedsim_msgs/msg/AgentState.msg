@@ -6,6 +6,7 @@ geometry_msgs/Pose pose
 geometry_msgs/Twist twist
 pedsim_msgs/AgentForce forces
 geometry_msgs/Point goal
+string model
 
 # Use sensors package to control observability
 

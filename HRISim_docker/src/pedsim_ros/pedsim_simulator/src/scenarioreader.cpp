@@ -137,12 +137,14 @@ void ScenarioReader::processData() {
       const double dx = elementAttributes.value("dx").toString().toDouble();
       const double dy = elementAttributes.value("dy").toString().toDouble();
       const int type = elementAttributes.value("type").toString().toInt();
+      const QString model = elementAttributes.value("model").toString();
       AgentCluster* agentCluster = new AgentCluster(x, y, n);
       agentCluster->setDistribution(dx, dy);
 
       /// TODO - change agents Vmax distribution based on agent type
       /// and other force parameters to realize different behaviours
       agentCluster->setType(static_cast<Ped::Tagent::AgentType>(type));
+      agentCluster->setModel(model);
       SCENE.addAgentCluster(agentCluster);
       currentAgents = agentCluster;
     } else if (elementName == "source") {
@@ -152,9 +154,11 @@ void ScenarioReader::processData() {
       const double dx = elementAttributes.value("dx").toString().toDouble();
       const double dy = elementAttributes.value("dy").toString().toDouble();
       const int type = elementAttributes.value("type").toString().toInt();
+      const QString model = elementAttributes.value("model").toString();
       AgentCluster* agentCluster = new AgentCluster(x, y, n);
       agentCluster->setDistribution(dx, dy);
       agentCluster->setType(static_cast<Ped::Tagent::AgentType>(type));
+      agentCluster->setModel(model);
       SCENE.addAgentCluster(agentCluster);
       currentAgents = agentCluster;
 

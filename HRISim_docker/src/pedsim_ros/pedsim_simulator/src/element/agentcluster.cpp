@@ -67,6 +67,7 @@ QList<Agent*> AgentCluster::dissolve() {
     if (distribution.height() != 0) randomizedY += randomY(RNG());
     a->setPosition(randomizedX, randomizedY);
     a->setType(agentType);
+    a->setModel(agentModel);
 
     // add waypoints to the agent
     foreach (Waypoint* waypoint, waypoints)
@@ -158,6 +159,10 @@ void AgentCluster::setType(Ped::Tagent::AgentType typeIn) {
   // inform users
   emit typeChanged(agentType);
 }
+
+QString AgentCluster::getModel() const { return agentModel; }
+
+void AgentCluster::setModel(QString modelIn) { agentModel = modelIn; }
 
 bool AgentCluster::getShallCreateGroups() const {
   // TODO: actually use this

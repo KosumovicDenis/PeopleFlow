@@ -128,6 +128,8 @@ class Agent : public ScenarioElement, public Ped::Tagent {
   void setX(double xIn);
   void setY(double yIn);
   void setType(Ped::Tagent::AgentType typeIn);
+  QString getModel() const;
+  void setModel(QString modelIn);
 
   // → VisibleScenarioElement Overrides/Overloads
  public:
@@ -155,6 +157,8 @@ class Agent : public ScenarioElement, public Ped::Tagent {
 
   // → waypoint planner
   WaypointPlanner* waypointplanner;
+
+  QString agentModel;
 
   int task_duration;
   double initialTime_task;

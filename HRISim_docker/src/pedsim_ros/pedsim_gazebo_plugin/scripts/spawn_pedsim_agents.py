@@ -10,9 +10,37 @@ from gazebo_msgs.srv import SpawnModel
 from geometry_msgs.msg import *
 from rospkg import RosPack
 from pedsim_msgs.msg  import AgentStates
+import os
 
-# xml file containing a gazebo model to represent agent, currently is represented by a cubic but can be changed
-global xml_file
+# Global dictionary to cache model XMLs
+model_cache = {}
+
+def get_model_xml(model_name):
+    if model_name in model_cache:
+        return model_cache[model_name]
+    
+    rospack = RosPack()
+    pkg_path = rospack.get_path('pedsim_gazebo_plugin')
+    
+    # Map requested model name to actual model directory
+    # Default is modello_umano if not specified or unknown
+    target_model = model_name if model_name in ["modello_robot", "modello_umano"] else "modello_umano"
+    
+    model_path = os.path.join(pkg_path, "models", target_model, "model.sdf")
+    
+    # If the specific model file doesn't exist, fallback to default actor_model.sdf
+    if not os.path.exists(model_path):
+        rospy.logwarn("Model path %s not found, falling back to default actor_model.sdf", model_path)
+        model_path = os.path.join(pkg_path, "models", "actor_model.sdf")
+
+    try:
+        with open(model_path, 'r') as f:
+            xml_string = f.read()
+            model_cache[model_name] = xml_string
+            return xml_string
+    except Exception as e:
+        rospy.logerr("Error reading model file %s: %s", model_path, str(e))
+        return None
 
 def cb_actor_poses(actors):
     global AGENT_SPAWNED
@@ -20,7 +48,14 @@ def cb_actor_poses(actors):
         for actor in actors.agent_states:
             actor_id = str( actor.id )
             actor_pose = actor.pose
-            rospy.loginfo("Spawning model: actor_id = %s", actor_id)
+            
+            # Choose model dynamically
+            model_to_use = actor.model if actor.model else "modello_umano"
+            rospy.loginfo("Spawning model: actor_id = %s, model = %s", actor_id, model_to_use)
+            
+            xml_string = get_model_xml(model_to_use)
+            if not xml_string:
+                continue
 
             model_pose = Pose(Point(x= actor_pose.position.x,
                                     y= actor_pose.position.y,
@@ -40,7 +75,13 @@ def cb_teleop_actor_poses(actors):
         for actor in actors.agent_states:
             actor_id = str( actor.id )
             actor_pose = actor.pose
-            rospy.loginfo("Spawning model: actor_id = %s", actor_id)
+            
+            model_to_use = actor.model if actor.model else "modello_umano"
+            rospy.loginfo("Spawning model: actor_id = %s, model = %s", actor_id, model_to_use)
+            
+            xml_string = get_model_xml(model_to_use)
+            if not xml_string:
+                continue
 
             model_pose = Pose(Point(x= actor_pose.position.x,
                                 y= actor_pose.position.y,
@@ -63,13 +104,6 @@ if __name__ == '__main__':
     AGENT_SPAWNED = not bool(rospy.get_param('/pedsim_simulator/spawn_agent'))
     TELEOP_AGENT_SPAWNED = not bool(rospy.get_param('/pedsim_simulator/spawn_teleop_agent'))
     TIMEOUT = float(rospy.get_param('/pedsim_simulator/spawn_timeout', 10))
-    rospack1 = RosPack()
-    pkg_path = rospack1.get_path('pedsim_gazebo_plugin')
-    default_actor_model_file = pkg_path + "/models/actor_model.sdf"
-
-    actor_model_file = rospy.get_param('~actor_model_file', default_actor_model_file)
-    file_xml = open(actor_model_file)
-    xml_string = file_xml.read()
 
     print("Waiting for gazebo services...")
     rospy.wait_for_service("gazebo/spawn_sdf_model")
@@ -80,7 +114,8 @@ if __name__ == '__main__':
 
     init = rospy.Time.now().to_sec()
     while not rospy.is_shutdown():
-        if init - rospy.Time.now().to_sec() >= TIMEOUT: rospy.signal_shutdown("Timeout")
+        # Corrected subtraction order: current time minus start time
+        if rospy.Time.now().to_sec() - init >= TIMEOUT: rospy.signal_shutdown("Timeout")
         if AGENT_SPAWNED and TELEOP_AGENT_SPAWNED:
             rospy.signal_shutdown("All agents have been spawned!")
         rate.sleep()

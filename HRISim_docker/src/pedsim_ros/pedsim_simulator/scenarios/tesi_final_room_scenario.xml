@@ -1828,19 +1828,19 @@
 
 		<!-- 3. AGENTI -->
 	<agent x="0.0" y="0.0" n="1" dx="0" dy="0" type="2"/>
-	<agent x="-4.2" y="4.2" n="1" dx="0.2" dy="0.2" type="1">
+	<agent x="-4.2" y="4.2" n="1" dx="0.2" dy="0.2" type="1" model="modello_robot">
 		<addwaypoint id="WP_A1"/>
 		<addwaypoint id="WP_A2"/>
 	</agent>
-	<agent x="-4.2" y="-4.2" n="1" dx="0.2" dy="0.2" type="1">
+	<agent x="-4.2" y="-4.2" n="1" dx="0.2" dy="0.2" type="1" model="modello_umano">
 		<addwaypoint id="WP_B1"/>
 		<addwaypoint id="WP_B2"/>
 	</agent>
-	<agent x="11.2" y="4.2" n="1" dx="0.2" dy="0.2" type="1">
+	<agent x="11.2" y="4.2" n="1" dx="0.2" dy="0.2" type="1" model="modello_umano">
 		<addwaypoint id="WP_C1"/>
 		<addwaypoint id="WP_C2"/>
 	</agent>
-	<agent x="11.2" y="-4.2" n="1" dx="0.2" dy="0.2" type="1">
+	<agent x="11.2" y="-4.2" n="1" dx="0.2" dy="0.2" type="1" model="modello_robot">
 		<addwaypoint id="WP_D1"/>
 		<addwaypoint id="WP_D2"/>
 	</agent>

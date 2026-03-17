@@ -314,6 +314,7 @@ void Simulator::publishAgents() {
 
     state.id = a->getId();
     state.type = a->getType();
+    state.model = a->getModel().toStdString();
     state.pose.position.x = a->getx();
     state.pose.position.y = a->gety();
     state.pose.position.z = a->getz();

@@ -494,6 +494,10 @@ void Agent::setType(Ped::Tagent::AgentType typeIn) {
   emit typeChanged(typeIn);
 }
 
+QString Agent::getModel() const { return agentModel; }
+
+void Agent::setModel(QString modelIn) { agentModel = modelIn; }
+
 Ped::Tvector Agent::getDesiredDirection() const { return desiredforce; }
 
 Ped::Tvector Agent::getWalkingDirection() const { return v; }
