@@ -24,7 +24,7 @@ class PFAgentsInfo():
         self.agents = {}
         agents_param = rospy.get_param('/peopleflow/agents', None)
         if agents_param is not None:
-            self.agents = {agent_id: Agent.from_dict(agent_data, SCHEDULE, G, ALLOW_TASK, MAX_TASKTIME) for agent_id, agent_data in agents_param.items()} 
+            self.agents = {agent_id: Agent.from_dict(agent_data, SCHEDULE, G) for agent_id, agent_data in agents_param.items()} 
        
     def pub_agents(self):
         self.load_agents()
@@ -36,12 +36,12 @@ class PFAgentsInfo():
             msg_Agent = pfAgent()
             msg_Agent.header = Header()
             msg_Agent.id = int(a.id)
-            msg_Agent.starting_time = String(data=seconds_to_hhmmss(TIME_INIT*3600 + a.startingTime) if a.startingTime is not None else "")
-            msg_Agent.exit_time = String(data=seconds_to_hhmmss(TIME_INIT*3600 + a.exitTime) if a.exitTime is not None else "")
+            msg_Agent.starting_time = String(data="")
+            msg_Agent.exit_time = String(data="")
             msg_Agent.position = Point(a.x, a.y, 0)
             msg_Agent.is_stuck.data = a.isStuck
-            msg_Agent.at_work.data = a.atWork
-            msg_Agent.is_quitting.data = a.isQuitting
+            msg_Agent.at_work.data = False
+            msg_Agent.is_quitting.data = False
             msg_Agent.past_WP_id = String(data=a.pastDest if a.pastDest is not None else "")
             msg_Agent.current_WP_id = String(data=a.currDest if a.currDest is not None else "")
             msg_Agent.path = [String(data=wp or "") for wp in a.path]
@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
     with open(g_path, 'rb') as f:
         G = pickle.load(f)
-        G.remove_node("charging-station")
+        # G.remove_node("charging-station")
         
     pfagents = PFAgentsInfo()
     

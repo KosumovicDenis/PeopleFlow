@@ -65,7 +65,10 @@ def cb_actor_poses(actors):
                                         actor_pose.orientation.z,
                                         actor_pose.orientation.w) )
 
-            spawn_model(actor_id, xml_string, "", model_pose, "world")
+            try:
+                spawn_model(actor_id, xml_string, "", model_pose, "world")
+            except Exception as e:
+                rospy.logerr("Error spawning model %s: %s", actor_id, str(e))
         rospy.logwarn("All autonomous agents have been spawn")
         AGENT_SPAWNED = True
         
@@ -91,7 +94,10 @@ def cb_teleop_actor_poses(actors):
                                         actor_pose.orientation.z,
                                         actor_pose.orientation.w) )
 
-            spawn_model(actor_id, xml_string, "", model_pose, "world")
+            try:
+                spawn_model(actor_id, xml_string, "", model_pose, "world")
+            except Exception as e:
+                rospy.logerr("Error spawning model %s: %s", actor_id, str(e))
         rospy.logwarn("All teleop agents have been spawn")
         TELEOP_AGENT_SPAWNED = True
 

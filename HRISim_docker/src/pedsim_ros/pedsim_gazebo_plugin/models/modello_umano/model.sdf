@@ -3,26 +3,21 @@
   <model name='modello_umano'>
     <static>true</static>
     <link name='link'>
-      <pose>0 0 0.5 0 0 0</pose>
+      <!-- Ruoto il link di 90 gradi (1.5708 rad) per allineare l'asse della mesh con la direzione di Pedsim -->
+      <pose>0 0 0 0 0 1.5708</pose>
       <collision name='collision'>
         <geometry>
-          <box>
-            <size>0.5 0.5 1.0</size>
-          </box>
+          <mesh>
+            <uri>model://person_walking/meshes/walking.dae</uri>
+          </mesh>
         </geometry>
       </collision>
       <visual name='visual'>
         <geometry>
-          <box>
-            <size>0.5 0.5 1.0</size>
-          </box>
+          <mesh>
+            <uri>model://person_walking/meshes/walking.dae</uri>
+          </mesh>
         </geometry>
-        <material>
-          <script>
-            <name>Gazebo/Blue</name>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-          </script>
-        </material>
       </visual>
     </link>
   </model>
