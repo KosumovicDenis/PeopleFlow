@@ -88,11 +88,10 @@
     <model name="r2_c2"><static>true</static><link name="l"><pose>19.7 4.7 1.0 0 0 -0.785</pose><collision name="c"><geometry><box><size>0.6 0.2 2.0</size></box></geometry></collision><visual name="v"><geometry><box><size>0.6 0.2 2.0</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Bricks</name></script></material></visual></link></model>
     <model name="r2_c3"><static>true</static><link name="l"><pose>19.95 4.3 1.0 0 0 -1.27</pose><collision name="c"><geometry><box><size>0.6 0.2 2.0</size></box></geometry></collision><visual name="v"><geometry><box><size>0.6 0.2 2.0</size></box></geometry><material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Bricks</name></script></material></visual></link></model>
 
-    <physics type="ode">
-      <real_time_update_rate>1000.0</real_time_update_rate>
+    <physics type='ode'>
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1</real_time_factor>
-      <ode><solver><type>quick</type><iters>150</iters></solver></ode>
+      <real_time_update_rate>1000</real_time_update_rate>
     </physics>
   </world>
 </sdf>

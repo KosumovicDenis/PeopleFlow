@@ -1,8 +1,9 @@
 <?xml version='1.0'?>
-<sdf version='1.7'>
+<sdf version='1.5'>
   <model name='actor_model'>
-    <static>1</static>
     <pose> 0 0 0 0 0 0 </pose>
+    <allow_auto_disable>1</allow_auto_disable>
+    <kinematic>1</kinematic>
     <link name='base_footprint'>
       <inertial>
         <mass>0.1</mass>

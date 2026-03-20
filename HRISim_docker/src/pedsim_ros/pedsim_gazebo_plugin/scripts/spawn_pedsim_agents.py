@@ -107,21 +107,31 @@ if __name__ == '__main__':
     rate = rospy.Rate(10)
     
     global AGENT_SPAWNED, TELEOP_AGENT_SPAWNED
-    AGENT_SPAWNED = not bool(rospy.get_param('/pedsim_simulator/spawn_agent'))
-    TELEOP_AGENT_SPAWNED = not bool(rospy.get_param('/pedsim_simulator/spawn_teleop_agent'))
+    AGENT_SPAWNED = not bool(rospy.get_param('/pedsim_simulator/spawn_agent', True))
+    TELEOP_AGENT_SPAWNED = not bool(rospy.get_param('/pedsim_simulator/spawn_teleop_agent', False))
     TIMEOUT = float(rospy.get_param('/pedsim_simulator/spawn_timeout', 10))
 
-    print("Waiting for gazebo services...")
-    rospy.wait_for_service("gazebo/spawn_sdf_model")
-    spawn_model = rospy.ServiceProxy("gazebo/spawn_sdf_model", SpawnModel)
-    print("service: spawn_sdf_model is available ....")
-    rospy.Subscriber("/pedsim_simulator/simulated_agents", AgentStates, cb_actor_poses)
-    rospy.Subscriber("/ped/control/gz_persons", AgentStates, cb_teleop_actor_poses)
+    try:
+        print("Waiting for gazebo services...")
+        rospy.wait_for_service("gazebo/spawn_sdf_model", timeout=5.0)
+        spawn_model = rospy.ServiceProxy("gazebo/spawn_sdf_model", SpawnModel)
+        print("service: spawn_sdf_model is available ....")
+        rospy.Subscriber("/pedsim_simulator/simulated_agents", AgentStates, cb_actor_poses)
+        rospy.Subscriber("/ped/control/gz_persons", AgentStates, cb_teleop_actor_poses)
 
-    init = rospy.Time.now().to_sec()
-    while not rospy.is_shutdown():
-        # Corrected subtraction order: current time minus start time
-        if rospy.Time.now().to_sec() - init >= TIMEOUT: rospy.signal_shutdown("Timeout")
-        if AGENT_SPAWNED and TELEOP_AGENT_SPAWNED:
-            rospy.signal_shutdown("All agents have been spawned!")
-        rate.sleep()
+        init = rospy.Time.now().to_sec()
+        while not rospy.is_shutdown():
+            if rospy.Time.now().to_sec() - init >= TIMEOUT: 
+                rospy.loginfo("Spawn timeout reached")
+                break
+            if AGENT_SPAWNED and TELEOP_AGENT_SPAWNED:
+                rospy.loginfo("All agents spawned successfully")
+                break
+            rate.sleep()
+            
+    except rospy.ROSInterruptException:
+        pass
+    except Exception as e:
+        rospy.logerr("Spawn script encountered an error: %s", str(e))
+    finally:
+        rospy.loginfo("Shutting down spawn_pedsim_agents node")

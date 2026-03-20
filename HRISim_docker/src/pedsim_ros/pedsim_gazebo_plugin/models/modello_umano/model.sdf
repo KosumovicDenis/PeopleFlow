@@ -1,9 +1,9 @@
-<?xml version='1.0'?>
+<?xml_version="1.0" ?>
 <sdf version='1.5'>
   <model name='modello_umano'>
-    <static>true</static>
     <link name='link'>
-      <!-- Ruoto il link di 90 gradi (1.5708 rad) per allineare l'asse della mesh con la direzione di Pedsim -->
+      <allow_auto_disable>1</allow_auto_disable>
+      <kinematic>1</kinematic>
       <pose>0 0 0 0 0 1.5708</pose>
       <collision name='collision'>
         <geometry>
