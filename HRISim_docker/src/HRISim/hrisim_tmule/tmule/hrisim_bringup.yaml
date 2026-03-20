@@ -25,8 +25,8 @@ init_cmd: |
 
   # robot specific arguments
   export_default TIAGO_TYPE "iron"
-  export_default TIAGO_x "0.0"
-  export_default TIAGO_y "0.0"
+  export_default TIAGO_x "2.0"
+  export_default TIAGO_y "2.0"
   export_default TIAGO_z "0.0"
   export_default TIAGO_R "0.0"
   export_default TIAGO_P "0.0"
@@ -39,7 +39,7 @@ init_cmd: |
 
   # world arguments
   # choose a map between: tesi_stanza1, maze, maze_corridor, warehouse
-  export_default WORLD "tesi_final_room"
+  export_default WORLD "mondo_tesi_1"
 
   # navigation specific arguments
   export_default GLOBAL_PLANNER "global_planner"
@@ -56,7 +56,7 @@ init_cmd: |
   # robot_mode == 0: CONTROLLED implies that the robot's velocity is set by some planning algorithm like DWA. Its very similar to the teleoperation mode, using tf in the mix is just a layer on top of this -->
   # robot_mode == 1: TELEOPERATION , we map the output of a teleop node (like joystick) to drive the robot -->
   # robot_mode == 2: SOCIAL mode means the robot's velocity is set by the social force just like the other agents -->
-  export_default SCENARIO "tesi_final_room_scenario"
+  export_default SCENARIO "scenario_tesi_1"
   export_default ALLOW_TASK "true"
   export_default STARTING_ELAPSED "8"
   export_default MAX_TASKTIME "60"

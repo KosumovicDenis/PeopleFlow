@@ -1,0 +1,126 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <world name="mondo_tesi_1">
+    <include><uri>model://sun</uri></include>
+    <include><uri>model://ground_plane</uri></include>
+    <plugin name='ActorPosesPlugin' filename='libActorPosesPlugin.so'/>
+
+    <model name='wall_west'>
+      <static>1</static>
+      <link name='l'>
+        <pose>-5 0 1.25 0 -0 0</pose>
+        <collision name='c'><geometry><box><size>0.15 10 2.5</size></box></geometry></collision>
+        <visual name='v'><geometry><box><size>0.15 10 2.5</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Bricks</name></script></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name='wall_east'>
+      <static>1</static>
+      <link name='l'>
+        <pose>5 0 1.25 0 -0 0</pose>
+        <collision name='c'><geometry><box><size>0.15 10 2.5</size></box></geometry></collision>
+        <visual name='v'><geometry><box><size>0.15 10 2.5</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Bricks</name></script></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name='wall_north'>
+      <static>1</static>
+      <link name='l'>
+        <pose>0 5 1.25 0 -0 0</pose>
+        <collision name='c'><geometry><box><size>10 0.15 2.5</size></box></geometry></collision>
+        <visual name='v'><geometry><box><size>10 0.15 2.5</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Bricks</name></script></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name='wall_south'>
+      <static>1</static>
+      <link name='l'>
+        <pose>0 -5 1.25 0 -0 0</pose>
+        <collision name='c'><geometry><box><size>10 0.15 2.5</size></box></geometry></collision>
+        <visual name='v'><geometry><box><size>10 0.15 2.5</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Bricks</name></script></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name='box1'>
+      <static>1</static>
+      <link name='l'>
+        <pose>-4.2 4.2 0.4 0 -0 0</pose>
+        <collision name='c'><geometry><box><size>0.8 0.8 0.8</size></box></geometry></collision>
+        <visual name='v'><geometry><box><size>0.8 0.8 0.8</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Wood</name></script></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name='box2'>
+      <static>1</static>
+      <link name='l'>
+        <pose>-3.4 4.2 0.4 0 -0 0.2</pose>
+        <collision name='c'><geometry><box><size>0.8 0.8 0.8</size></box></geometry></collision>
+        <visual name='v'><geometry><box><size>0.8 0.8 0.8</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Wood</name></script></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name='box3'>
+      <static>1</static>
+      <link name='l'>
+        <pose>-4.2 3.4 0.4 0 0 -0.1</pose>
+        <collision name='c'><geometry><box><size>0.8 0.8 0.8</size></box></geometry></collision>
+        <visual name='v'><geometry><box><size>0.8 0.8 0.8</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Wood</name></script></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name='shelf_unit'>
+      <static>1</static>
+      <link name='shelf_link'>
+        <pose>4.5 -4.8 0 0 -0 1.5708</pose>
+        <collision name='shelf_collision'>
+          <pose>0.17 0.45 0 0 -0 0</pose>
+          <geometry><box><size>0.35 0.9 2</size></box></geometry>
+        </collision>
+        <visual name='shelf_mesh'>
+          <geometry><mesh><uri>model://shelf/meshes/model.dae</uri></mesh></geometry>
+        </visual>
+      </link>
+    </model>
+
+    <model name='shelf_unit_2'>
+      <static>1</static>
+      <link name='shelf_link'>
+        <pose>4.5 -4.4 0 0 -0 0</pose>
+        <collision name='shelf_collision'>
+          <pose>0.17 0.45 0 0 -0 0</pose>
+          <geometry><box><size>0.35 0.9 2</size></box></geometry>
+        </collision>
+        <visual name='shelf_mesh'>
+          <geometry><mesh><uri>model://shelf/meshes/model.dae</uri></mesh></geometry>
+        </visual>
+      </link>
+    </model>
+
+    <physics type='ode'>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+    </physics>
+
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+
+  </world>
+</sdf>
