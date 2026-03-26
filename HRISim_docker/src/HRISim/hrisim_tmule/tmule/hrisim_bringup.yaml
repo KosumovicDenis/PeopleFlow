@@ -56,7 +56,7 @@ init_cmd: |
   # robot_mode == 0: CONTROLLED implies that the robot's velocity is set by some planning algorithm like DWA. Its very similar to the teleoperation mode, using tf in the mix is just a layer on top of this -->
   # robot_mode == 1: TELEOPERATION , we map the output of a teleop node (like joystick) to drive the robot -->
   # robot_mode == 2: SOCIAL mode means the robot's velocity is set by the social force just like the other agents -->
-  export_default SCENARIO "scenario_tesi_1"
+  export_default SCENARIO "scenario_tesi_2"
   export_default ALLOW_TASK "true"
   export_default STARTING_ELAPSED "8"
   export_default MAX_TASKTIME "60"
@@ -93,6 +93,12 @@ windows:
     tags: ['core']
     panes:
       - 'rosrun rqt_peopleflow agents_info.py'
+  - name: risk
+    tags: ['core']
+    panes:
+      - 'rosrun pedsim_gazebo_plugin pedsim_to_risk_bridge.py'
+      - 'roslaunch hrisim_risk risk.launch'
+      - 'rosrun hrisim_rviz risk_visualiser.py'
   - name: robot-nav
     tags: ['robot']
     panes:

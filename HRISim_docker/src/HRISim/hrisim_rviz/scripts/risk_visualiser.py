@@ -2,13 +2,13 @@
 
 import rospy
 from visualization_msgs.msg import Marker
-from HRISim_risk.msg import Risk
+from hrisim_risk.msg import Risk
 
 def cb_risk(risk):
 
     line_marker = Marker()
     line_marker.header.frame_id = "map"
-    line_marker.header.stamp = rospy.Time.now()
+    line_marker.header.stamp = risk.header.stamp    # rospy.Time.now()
     line_marker.type = Marker.LINE_LIST
     line_marker.action = Marker.ADD
     line_marker.pose.orientation.w = 1.0

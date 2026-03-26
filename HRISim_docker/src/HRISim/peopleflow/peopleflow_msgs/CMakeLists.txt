@@ -14,6 +14,8 @@ add_message_files( DIRECTORY msg
   WPPeopleCounter.msg
   WPPeopleCounters.msg
   Time.msg
+  RobotState.msg
+  HumanState.msg
 )
 
 # Generate added messages and services with any dependencies listed here
