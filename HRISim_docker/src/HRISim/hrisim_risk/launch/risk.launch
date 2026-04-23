@@ -3,6 +3,6 @@
   <param name="/hri/obs_size" value="2.0"/>
 
   <node name="risk" pkg="hrisim_risk" type="risk.py" output="screen">
+    <param name="subject" value="$(arg subject)" />
   </node>
-
 </launch>

@@ -4,8 +4,8 @@ import rospy
 from visualization_msgs.msg import Marker
 from hrisim_risk.msg import Risk
 
-def cb_risk(risk):
 
+def cb_risk(risk):
     line_marker = Marker()
     line_marker.header.frame_id = "map"
     line_marker.header.stamp = risk.header.stamp    # rospy.Time.now()
@@ -15,11 +15,11 @@ def cb_risk(risk):
     line_marker.scale.x = 0.05  # Set the line width
 
     if risk.collision.data:
-        line_marker.color.r = 1.0 
+        line_marker.color.r = 1.0
         line_marker.color.g = 0.0
         line_marker.color.b = 0.0
     else:
-        line_marker.color.r = 0.0 
+        line_marker.color.r = 0.0
         line_marker.color.g = 0.75
         line_marker.color.b = 0.0
     line_marker.color.a = 1.0
@@ -35,8 +35,6 @@ def cb_risk(risk):
     line_marker.points.append(risk.left)
 
     triangle_pub.publish(line_marker)
-
-    
 
 if __name__ == '__main__':
     try:
