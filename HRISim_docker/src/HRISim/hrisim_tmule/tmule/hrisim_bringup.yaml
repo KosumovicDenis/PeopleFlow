@@ -25,8 +25,8 @@ init_cmd: |
 
   # robot specific arguments
   export_default TIAGO_TYPE "iron"
-  export_default TIAGO_x "2.0"
-  export_default TIAGO_y "2.0"
+  export_default TIAGO_x "-4.0"
+  export_default TIAGO_y "-4.0"
   export_default TIAGO_z "0.0"
   export_default TIAGO_R "0.0"
   export_default TIAGO_P "0.0"

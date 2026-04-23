@@ -1,4 +1,4 @@
-image: /home/hrisim/ros_ws/src/HRISim/hrisim_gazebo/tiago_maps/tesi_stanza1/map.pgm
+image: map.pgm
 resolution: 0.050000
 origin: [-50.000000, -50.000000, 0.000000]
 negate: 0
