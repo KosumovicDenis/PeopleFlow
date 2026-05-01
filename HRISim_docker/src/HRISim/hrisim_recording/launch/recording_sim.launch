@@ -5,11 +5,8 @@
   <node name="rosbag_record_data" pkg="rosbag" type="record"
       args="record -O /root/shared/$(arg bagname).bag
             /map                                                                                                             
-            /mobile_base_controller/odom                                                                                     
-            /move_base/goal                                                                                  
-            /ped/control/teleop_persons                                                                                              
+            /hri/risk
             /pedsim_simulator/simulated_agents
-            /robot_pose                              
             /tf                                                                                
             /tf_static"
   />

@@ -33,7 +33,8 @@ def compute_risk(subject: Point, obstacle: Point, subject_v: Point, obstacle_v: 
     cone_origin = Point(subject.x, subject.y)
     cone = Polygon([cone_origin, left, right])
     
-    P = Point(cone_origin.x + subject_v.x, cone_origin.y + subject_v.y)
+    # P = Point(cone_origin.x + subject_v.x, cone_origin.y + subject_v.y)
+    P = Point(cone_origin.x - obstacle_v.x, cone_origin.y - obstacle_v.y)
     
     collision = P.within(cone) and subject.distance(obstacle) < SAFE_DIST
     
