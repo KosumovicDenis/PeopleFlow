@@ -14,7 +14,8 @@ def generate_tesi_1_graph():
     waypoints = {
         "WP_CENTER": (0.0, 0.0),
         "WP_SHELF": (3.0, -3.0),
-        "WP_BOXES": (-2.5, 2.5)
+        "WP_BOXES": (-2.5, 2.5),
+        "WP_SAFE": (1.0, 1.0)
     }
 
     # Aggiunta nodi
@@ -24,6 +25,7 @@ def generate_tesi_1_graph():
     # Connessioni (Tutti collegati tra loro in una stanza aperta)
     G.add_edge("WP_CENTER", "WP_SHELF", weight=dist(waypoints["WP_CENTER"], waypoints["WP_SHELF"]))
     G.add_edge("WP_CENTER", "WP_BOXES", weight=dist(waypoints["WP_CENTER"], waypoints["WP_BOXES"]))
+    G.add_edge("WP_CENTER", "WP_SAFE", weight=dist(waypoints["WP_CENTER"], waypoints["WP_SAFE"]))
     # G.add_edge("WP_SHELF", "WP_BOXES", weight=dist(waypoints["WP_SHELF"], waypoints["WP_BOXES"]))
 
     # Salvataggio

@@ -907,12 +907,14 @@
   <obstacle x1="4.930538000000002" y1="-4.876943000000001" x2="4.880538000000001" y2="-4.826943"/>
 
   <waypoint id="WP_CENTER" x="0.0" y="0.0" r="0.5"/>
+  <waypoint id="WP_SAFE" x="1.0" y="1.0" r="0.1"/>
   <waypoint id="WP_SHELF" x="3.0" y="-3.0" r="0.8"/>
   <waypoint id="WP_BOXES" x="-2.5" y="2.5" r="0.8"/>
 
   <!-- id=0 -->
   <agent x="-1.0" y="-1.0" n="1" dx="0" dy="0" type="1" model="modello_umano">
     <addwaypoint id="WP_CENTER"/>
+    <addwaypoint id="WP_SAFE"/>
   </agent>
 
   <!-- id=1 -->
