@@ -73,7 +73,7 @@ init_cmd: |
 
   # Gazebo arguments
   export_default GAZEBO_GUI "true"
-  export_default MAX_STEP_SIZE "0.002" # 0.002
+  export_default MAX_STEP_SIZE "0.001" # 0.002
   export_default REAL_TIME_UPDATE_RATE "1000" # 0
 
 windows:
@@ -117,3 +117,7 @@ windows:
     tags: ['exp']
     panes:
       - 'roslaunch peopleflow_bringup peopleflow_bringup.launch scenario:=$SCENARIO starting_elapsed:=$STARTING_ELAPSED allow_task:=$ALLOW_TASK max_tasktime:=$MAX_TASKTIME robot_mode:=$ROBOT_MODE max_human_speed:=$MAX_HUMAN_SPEED robot_radius:=$ROBOT_RADIUS is_stuck_threshold:=$IS_STUCK_THRESHOLD force_obstacle:=$FORCE_OBSTACLE sigma_obstacle:=$SIGMA_OBSTACLE force_social:=$FORCE_SOCIAL'
+  - name: rec
+    tags: ['core']
+    panes:
+      - 'roslaunch hrisim_recording recording_sim.launch bagname:=$SCENARIO'

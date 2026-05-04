@@ -24,19 +24,16 @@ TOPICS = [
     "/hrisim/robot_obs",
     "/hri/risk"
 ]
-   
+
 if __name__ == '__main__':
     rospy.init_node('hrisim_recording')
     rate = rospy.Rate(10)  # 10 Hz
-    
-    schedule = ros_utils.wait_for_param("/peopleflow/schedule")
-    
+
     try:
         bag_process = subprocess.Popen(['rosbag', 'record', '-O', '/root/shared/experiment.bag'] + TOPICS, shell=False)
     except Exception as e:
         rospy.logerr(f"Failed to start ROS bag recording: {str(e)}")
-        
-    
+
     def shutdown_hook():
         if bag_process is not None:
             try:
@@ -46,8 +43,8 @@ if __name__ == '__main__':
                 rospy.loginfo("ROS bag recording stopped.")
             except Exception as e:
                 rospy.logerr(f"Failed to stop ROS bag recording: {str(e)}")
-                
+
     # Register the shutdown hook
-    rospy.on_shutdown(shutdown_hook)             
+    rospy.on_shutdown(shutdown_hook)
 
     rospy.spin()
