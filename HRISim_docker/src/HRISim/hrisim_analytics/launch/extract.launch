@@ -1,0 +1,13 @@
+<launch>
+    <arg name="bag_name" default="data_log" />
+    <arg name="output_dir" default="$(find hrisim_analytics)/data" />
+    <arg name="robot_id" default="1" />
+    <arg name="human_id" default="0" />
+
+    <node name="metrics_extractor" pkg="hrisim_analytics" type="extract_metrics.py" output="screen">
+        <param name="bag_name" value="$(arg bag_name)" />
+        <param name="output_dir" value="$(arg output_dir)" />
+        <param name="robot_id" value="$(arg robot_id)" />
+        <param name="human_id" value="$(arg human_id)" />
+    </node>
+</launch>
