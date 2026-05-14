@@ -1,17 +1,16 @@
 #!/bin/bash
 
 if [ "$#" -lt 1 ]; then
-    echo "Usage: ./process_bag.sh /path/to/your/bagfile.bag [robot_id] [human_id]"
-    echo "Defaults: robot_id=1, human_id=0"
+    echo "Usage: ./process_bag.sh /path/to/your/bagfile.bag [subject_id]"
+    echo "Defaults: subject_id=0 (Human)"
     exit 1
 fi
 
 BAG_FILE=$1
 BAG_NAME=$(basename "$BAG_FILE" .bag)
-ROBOT_ID=${2:-1}
-HUMAN_ID=${3:-0}
+SUBJECT_ID=${2:-0}
 
-echo "Processing bag: $BAG_NAME (Robot: $ROBOT_ID, Human: $HUMAN_ID)"
+echo "Processing bag: $BAG_NAME (Subject: $SUBJECT_ID)"
 
 # Start roscore in background if not running
 roscore &
@@ -22,7 +21,7 @@ sleep 5
 rosparam set use_sim_time true
 
 # Start the extractor in background
-roslaunch hrisim_analytics extract.launch bag_name:="$BAG_NAME" robot_id:="$ROBOT_ID" human_id:="$HUMAN_ID" &
+roslaunch hrisim_analytics extract.launch bag_name:="$BAG_NAME" subject:="$SUBJECT_ID" &
 EXTRACTOR_PID=$!
 sleep 2
 
