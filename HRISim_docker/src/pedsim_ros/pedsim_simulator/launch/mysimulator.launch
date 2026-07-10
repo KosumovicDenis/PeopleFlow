@@ -2,6 +2,8 @@
   <arg name="scenario"/>
   <arg name="default_queue_size" default="10"/>
   <arg name="max_human_speed" default="0.5"/>
+  <arg name="max_agent_speed" default="0.0"/> <!-- m/s for all pedestrians; 0 keeps per-agent random speed -->
+
   <arg name="robot_mode" default="0"/>
   <arg name="robot_radius" default="5"/>
   <arg name="robot_base_frame_id" default="base_footprint"/> 
@@ -24,6 +26,7 @@
     <param name="scene_file" value="$(find pedsim_simulator)/scenarios/$(arg scenario).xml" type="string"/>
     <param name="default_queue_size" value="$(arg default_queue_size)" type="int"/>
     <param name="max_robot_speed" value="$(arg max_human_speed)" type="double"/>
+    <param name="max_agent_speed" value="$(arg max_agent_speed)" type="double"/>
     <param name="robot_mode" value="$(arg robot_mode)" type="int"/>
     <param name="robot_radius" value="$(arg robot_radius)" type="double"/>
     <param name="robot_base_frame_id" value="$(arg robot_base_frame_id)" type="string"/>

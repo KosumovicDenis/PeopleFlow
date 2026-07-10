@@ -29,6 +29,7 @@
 * \author Sven Wehner <mail@svenwehner.de>
 */
 
+#include <pedsim_simulator/config.h>
 #include <pedsim_simulator/element/agentcluster.h>
 #include <pedsim_simulator/element/waitingqueue.h>
 #include <pedsim_simulator/rng.h>
@@ -68,6 +69,8 @@ QList<Agent*> AgentCluster::dissolve() {
     a->setPosition(randomizedX, randomizedY);
     a->setType(agentType);
     a->setModel(agentModel);
+    if (CONFIG.max_agent_speed > 0 && agentType != Ped::Tagent::ROBOT)
+      a->setVmax(CONFIG.max_agent_speed);
 
     // add waypoints to the agent
     foreach (Waypoint* waypoint, waypoints)

@@ -101,6 +101,10 @@ class Config : public QObject {
   double forceRandom;
   double forceAlongWall;
 
+  // agents (pedestrians) speed override: <= 0 keeps the per-agent random
+  // speed drawn at creation, > 0 forces every agent's vmax to this value
+  double max_agent_speed;
+
   // robot control
   RobotMode robot_mode;
   int robot_wait_time;

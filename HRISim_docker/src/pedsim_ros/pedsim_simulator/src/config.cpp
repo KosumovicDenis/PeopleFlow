@@ -51,6 +51,8 @@ Config::Config(QObject* parent) {
   cell_width = 1.0;
   cell_height = 1.0;
 
+  max_agent_speed = 0.0;
+
   robot_mode = RobotMode::TELEOPERATION;
   robot_wait_time = 15;
   max_robot_speed = 2.0;

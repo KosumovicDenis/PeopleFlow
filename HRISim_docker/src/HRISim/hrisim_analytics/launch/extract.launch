@@ -2,10 +2,12 @@
     <arg name="bag_name" default="data_log" />
     <arg name="output_dir" default="$(find hrisim_analytics)/data" />
     <arg name="subject" default="0" />
+    <arg name="max_duration" default="330" />
 
     <node name="metrics_extractor" pkg="hrisim_analytics" type="extract_metrics.py" output="screen">
         <param name="bag_name" value="$(arg bag_name)" />
         <param name="output_dir" value="$(arg output_dir)" />
         <param name="subject" value="$(arg subject)" />
+        <param name="max_duration" value="$(arg max_duration)" />
     </node>
 </launch>

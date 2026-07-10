@@ -5,6 +5,7 @@
     <arg name="max_tasktime"            default="60" />
     <arg name="robot_mode"              default="1" />
     <arg name="max_human_speed"         default="1.5" />
+    <arg name="max_agent_speed"         default="0.0" />
     <arg name="robot_radius"            default="5" />
     <arg name="is_stuck_threshold"      default="65" />
     <arg name="force_obstacle"          default="5.0" />
@@ -24,6 +25,7 @@
         <arg name="scenario"            value="$(arg scenario)" />
         <arg name="robot_mode"          value="$(arg robot_mode)" />
         <arg name="max_human_speed"     value="$(arg max_human_speed)" />
+        <arg name="max_agent_speed"     value="$(arg max_agent_speed)" />
         <arg name="robot_radius"        value="$(arg robot_radius)" />
         <arg name="is_stuck_threshold"  value="$(arg is_stuck_threshold)" />
         <arg name="force_obstacle"      value="$(arg force_obstacle)" />

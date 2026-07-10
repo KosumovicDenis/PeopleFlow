@@ -12,7 +12,7 @@ NODE_NAME = "hrisim_risk"
 NODE_RATE = 10 # [Hz]
 
 def compute_risk(subject: Point, obstacle: Point, subject_v: Point, obstacle_v: Point):
-    risk = math.sqrt(subject_v.x**2 + subject_v.y**2)
+    # risk = math.sqrt(subject_v.x**2 + subject_v.y**2)
     collision = False
     
     Vrel = Point(obstacle_v.x - subject_v.x, obstacle_v.y - subject_v.y)
@@ -21,7 +21,9 @@ def compute_risk(subject: Point, obstacle: Point, subject_v: Point, obstacle_v: 
         slope_AB = (obstacle.y - subject.y) / (obstacle.x - subject.x)
     except ZeroDivisionError:
         slope_AB = 0.0001
-        
+
+    if slope_AB == 0:
+        slope_AB = 0.0001
     slope_PAB = -1 / slope_AB
 
     delta_x = OBS_SIZE / (1 + slope_PAB ** 2) ** 0.5
@@ -34,18 +36,39 @@ def compute_risk(subject: Point, obstacle: Point, subject_v: Point, obstacle_v: 
     cone = Polygon([cone_origin, left, right])
     
     # P = Point(cone_origin.x + subject_v.x, cone_origin.y + subject_v.y)
-    P = Point(cone_origin.x - obstacle_v.x, cone_origin.y - obstacle_v.y)
-    
-    collision = P.within(cone) and subject.distance(obstacle) < SAFE_DIST
-    
-    if collision:
-        v_rel_norm = math.sqrt(Vrel.x**2 + Vrel.y**2)
-        if v_rel_norm > 0:
-            time_collision_measure = subject.distance(obstacle) / v_rel_norm
-            steering_effort_measure = min(P.distance(LineString([cone_origin, left])), P.distance(LineString([cone_origin, right])))
-            risk = risk + 1/time_collision_measure + steering_effort_measure
-        
-    return math.exp(risk), collision, cone_origin, left, right
+    # The 1s-lookahead point P must fall inside the cone, whose base lies at
+    # the obstacle distance: clamp the displacement so that relative speeds
+    # larger than the distance cannot overshoot past the base and miss it.
+    v_rel_norm = math.sqrt(Vrel.x**2 + Vrel.y**2)
+    dist = subject.distance(obstacle)
+    scale = min(1.0, 0.9 * dist / v_rel_norm) if v_rel_norm > 0 else 1.0
+    P = Point(cone_origin.x - Vrel.x * scale, cone_origin.y - Vrel.y * scale)
+
+    collision = P.within(cone) and dist < SAFE_DIST
+
+    # --- old risk formula, kept for reference ---
+    # risk = 1 / (abs(subject.x - obstacle.x) + abs(subject.y - obstacle.y))
+    # if collision:
+    #     if v_rel_norm > 0:
+    #         time_collision_measure = dist / v_rel_norm
+    #         steering_effort_measure = min(P.distance(LineString([cone_origin, left])), P.distance(LineString([cone_origin, right])))
+    #         risk = risk + 1/time_collision_measure + steering_effort_measure
+    # risk = math.exp(risk)
+
+    # Risk w.r.t. the subject (the agent standing at the center): proximity
+    # inside SAFE_DIST plus closing speed (inverse time-to-collision), then
+    # normalized to [0, 1). Zero when the obstacle is far or moving away.
+    if dist > 0:
+        ux = (obstacle.x - subject.x) / dist
+        uy = (obstacle.y - subject.y) / dist
+        v_closing = max(0.0, -(Vrel.x * ux + Vrel.y * uy))
+        risk_prox = max(0.0, SAFE_DIST / dist - 1.0)
+        risk_ttc = v_closing / dist
+        risk = 1.0 - math.exp(-(W_PROX * risk_prox + W_TTC * risk_ttc))
+    else:
+        risk = 1.0
+
+    return risk, collision, cone_origin, left, right
 
 
 class RiskClass():
@@ -124,8 +147,10 @@ if __name__ == '__main__':
     # Node
     rospy.init_node(NODE_NAME, anonymous=True)
 
-    SAFE_DIST = float(rospy.get_param("/hri/safe_distance", default = 5.0))
-    OBS_SIZE = float(rospy.get_param("/hri/obs_size", default = 2.5))
+    SAFE_DIST = float(rospy.get_param("/hri/safe_distance", default = 2.3))
+    OBS_SIZE = float(rospy.get_param("/hri/obs_size", default = 1))
+    W_PROX = float(rospy.get_param("/hri/risk_w_prox", default = 1.0))
+    W_TTC = float(rospy.get_param("/hri/risk_w_ttc", default = 1.0))
         
     r = RiskClass()
 

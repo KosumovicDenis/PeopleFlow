@@ -114,6 +114,7 @@ bool Simulator::initializeSimulation() {
 
   nh_.param<bool>("enable_groups", CONFIG.groups_enabled, true);
   nh_.param<double>("max_robot_speed", CONFIG.max_robot_speed, 1.5);
+  nh_.param<double>("max_agent_speed", CONFIG.max_agent_speed, 0.0);
   nh_.param<double>("robot_radius", CONFIG.robot_radius, 2); // added by Luca
   nh_.param<double>("update_rate", CONFIG.updateRate, 25.0);
   nh_.param<double>("simulation_factor", CONFIG.simulationFactor, 1.0);
@@ -184,6 +185,16 @@ void Simulator::reconfigureCB(pedsim_simulator::PedsimSimulatorConfig& config,
   CONFIG.setGroupRepulsionForce(config.force_group_repulsion);
   CONFIG.setRandomForce(config.force_random);
   CONFIG.setAlongWallForce(config.force_wall);
+
+  // update the max speed of all (non-robot) agents currently in the scene;
+  // newly spawned agents pick it up in AgentCluster::dissolve()
+  CONFIG.max_agent_speed = config.max_agent_speed;
+  if (CONFIG.max_agent_speed > 0) {
+    for (Agent* agent : SCENE.getAgents()) {
+      if (agent->getType() != Ped::Tagent::ROBOT)
+        agent->setVmax(CONFIG.max_agent_speed);
+    }
+  }
 
   // puase or unpause the simulation
   if (paused_ != config.paused) {

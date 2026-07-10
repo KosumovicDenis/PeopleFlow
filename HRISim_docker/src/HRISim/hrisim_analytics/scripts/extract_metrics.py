@@ -11,12 +11,12 @@ import math
 from shapely.geometry import *
 
 # Global constants for risk calculation (matches risk.py defaults)
-SAFE_DIST = 2.0
-OBS_SIZE = 2.0
-MAX_DURATION = 330.0 # 5 minutes and 30 seconds
+SAFE_DIST = 2.3
+OBS_SIZE = 1.0
+W_PROX = 1.0
+W_TTC = 1.0
 
 def compute_risk(subject: Point, obstacle: Point, subject_v: Point, obstacle_v: Point):
-    risk_val = math.sqrt(subject_v.x**2 + subject_v.y**2)
     collision = False
     
     Vrel = Point(obstacle_v.x - subject_v.x, obstacle_v.y - subject_v.y)
@@ -25,7 +25,9 @@ def compute_risk(subject: Point, obstacle: Point, subject_v: Point, obstacle_v: 
         slope_AB = (obstacle.y - subject.y) / (obstacle.x - subject.x)
     except ZeroDivisionError:
         slope_AB = 0.0001
-        
+
+    if slope_AB == 0:
+        slope_AB = 0.0001
     slope_PAB = -1 / slope_AB
 
     delta_x = OBS_SIZE / (1 + slope_PAB ** 2) ** 0.5
@@ -37,18 +39,39 @@ def compute_risk(subject: Point, obstacle: Point, subject_v: Point, obstacle_v: 
     cone_origin = Point(subject.x, subject.y)
     cone = Polygon([cone_origin, left, right])
     
-    P = Point(cone_origin.x - obstacle_v.x, cone_origin.y - obstacle_v.y)
-    
-    collision = P.within(cone) and subject.distance(obstacle) < SAFE_DIST
-    
-    if collision:
-        v_rel_norm = math.sqrt(Vrel.x**2 + Vrel.y**2)
-        if v_rel_norm > 0:
-            time_collision_measure = subject.distance(obstacle) / v_rel_norm
-            steering_effort_measure = min(P.distance(LineString([cone_origin, left])), P.distance(LineString([cone_origin, right])))
-            risk_val = risk_val + 1/time_collision_measure + steering_effort_measure
-        
-    return math.exp(risk_val)
+    # The 1s-lookahead point P must fall inside the cone, whose base lies at
+    # the obstacle distance: clamp the displacement so that relative speeds
+    # larger than the distance cannot overshoot past the base and miss it.
+    v_rel_norm = math.sqrt(Vrel.x**2 + Vrel.y**2)
+    dist = subject.distance(obstacle)
+    scale = min(1.0, 0.9 * dist / v_rel_norm) if v_rel_norm > 0 else 1.0
+    P = Point(cone_origin.x - Vrel.x * scale, cone_origin.y - Vrel.y * scale)
+
+    collision = P.within(cone) and dist < SAFE_DIST
+
+    # --- old risk formula, kept for reference ---
+    # risk_val = 1 / (abs(subject.x - obstacle.x) + abs(subject.y - obstacle.y))
+    # if collision:
+    #     if v_rel_norm > 0:
+    #         time_collision_measure = dist / v_rel_norm
+    #         steering_effort_measure = min(P.distance(LineString([cone_origin, left])), P.distance(LineString([cone_origin, right])))
+    #         risk_val = risk_val + 1/time_collision_measure + steering_effort_measure
+    # risk_val = math.exp(risk_val)
+
+    # Risk w.r.t. the subject (the agent standing at the center): proximity
+    # inside SAFE_DIST plus closing speed (inverse time-to-collision), then
+    # normalized to [0, 1). Zero when the obstacle is far or moving away.
+    if dist > 0:
+        ux = (obstacle.x - subject.x) / dist
+        uy = (obstacle.y - subject.y) / dist
+        v_closing = max(0.0, -(Vrel.x * ux + Vrel.y * uy))
+        risk_prox = max(0.0, SAFE_DIST / dist - 1.0)
+        risk_ttc = v_closing / dist
+        risk_val = 1.0 - math.exp(-(W_PROX * risk_prox + W_TTC * risk_ttc))
+    else:
+        risk_val = 1.0
+
+    return risk_val
 
 class MetricsExtractor:
     def __init__(self):
@@ -58,6 +81,7 @@ class MetricsExtractor:
         
         # subject_mode: 0 for Human subject, 1 for Robot subject
         self.subject_mode = int(rospy.get_param('~subject', 0))
+        self.max_duration = float(rospy.get_param('~max_duration', 330.0))
         self.human_id = 0
         self.robot_id = 1
         
@@ -78,7 +102,7 @@ class MetricsExtractor:
         # Subscriber
         self.sub_agents = rospy.Subscriber("/pedsim_simulator/simulated_agents", AgentStates, self.callback)
         
-        rospy.loginfo(f"Metrics Extractor initialized (10Hz, Max Duration: {MAX_DURATION}s).")
+        rospy.loginfo(f"Metrics Extractor initialized (10Hz, Max Duration: {self.max_duration}s).")
         rospy.loginfo(f"Subject: {'Robot' if self.subject_mode == 1 else 'Human'}")
 
     def callback(self, agents_msg):
@@ -90,9 +114,9 @@ class MetricsExtractor:
         if self.first_timestamp is None:
             self.first_timestamp = curr_time
             
-        # Check if 5m 30s limit reached
-        if curr_time - self.first_timestamp > MAX_DURATION:
-            rospy.logwarn(f"Reached time limit of {MAX_DURATION}s. Saving and shutting down.")
+        # Check if time limit reached
+        if curr_time - self.first_timestamp > self.max_duration:
+            rospy.logwarn(f"Reached time limit of {self.max_duration}s. Saving and shutting down.")
             self.limit_reached = True
             rospy.signal_shutdown("Time limit reached")
             return
@@ -128,18 +152,16 @@ class MetricsExtractor:
 
         if self.subject_mode == 1: # Robot subject
             subj_p, subj_v, obst_p, obst_v = Point(r_pos_n[0], r_pos_n[1]), Point(r_vel_n[0], r_vel_n[1]), Point(h_pos_n[0], h_pos_n[1]), Point(h_vel_n[0], h_vel_n[1])
-            v_subj, v_obst = r_v_noisy, h_v_noisy
         else: # Human subject
             subj_p, subj_v, obst_p, obst_v = Point(h_pos_n[0], h_pos_n[1]), Point(h_vel_n[0], h_vel_n[1]), Point(r_pos_n[0], r_pos_n[1]), Point(r_vel_n[0], r_vel_n[1])
-            v_subj, v_obst = h_v_noisy, r_v_noisy
 
         recalculated_risk = compute_risk(subj_p, obst_p, subj_v, obst_v)
 
         row = {
-            'timestamp': curr_time,
-            'v_subject': v_subj,
-            'v_obstacle': v_obst,
-            'risk': recalculated_risk
+            'Timestamp': curr_time,
+            'Vr': r_v_noisy,
+            'Vh': h_v_noisy,
+            'Risk': recalculated_risk
         }
         self.data_rows.append(row)
         
@@ -153,9 +175,10 @@ class MetricsExtractor:
             
         df = pd.DataFrame(self.data_rows)
         
-        # Apply Markovian Shifts
-        df['risk'] = df['risk'].shift(1)
-        df['v_subject'] = df['v_subject'].shift(2)
+        # Apply Markovian Shifts (risk lags by 1, subject velocity by 2)
+        df['Risk'] = df['Risk'].shift(1)
+        subject_col = 'Vr' if self.subject_mode == 1 else 'Vh'
+        df[subject_col] = df[subject_col].shift(2)
         
         # Trim 2 rows from head and tail
         df = df.iloc[2:-2]

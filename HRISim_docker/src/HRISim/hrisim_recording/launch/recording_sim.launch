@@ -1,9 +1,11 @@
 <launch>
 
   <arg name="bagname" />
+  <arg name="duration" default="330" /> <!-- seconds; recording stops automatically -->
 
   <node name="rosbag_record_data" pkg="rosbag" type="record"
       args="record -O /home/hrisim/ros_ws/$(arg bagname).bag
+            --duration=$(arg duration)
             /map                                                                                                             
             /hri/risk
             /pedsim_simulator/simulated_agents
