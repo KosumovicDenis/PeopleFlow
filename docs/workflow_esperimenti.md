@@ -171,4 +171,5 @@ Trasformazioni applicate dall'estrattore:
 | il CSV si ferma a 330 s ma la run era più lunga | `max_duration` non passato a `process_bag.sh` | ripetere il post-processing con il terzo argomento |
 | rischio riferito all'agente sbagliato | `subject` incoerente tra tmule e post-processing | verificare Sezione 3.1 e riprocessare il bag |
 | l'agente al centro non parte mai | nodo `risk` non attivo o `subject` errato | controllare il pannello `risk` e il flag `collision` su `/hri/risk` |
-| `process_bag.sh` dà errori di roscore | eseguito con la simulazione attiva | fare `tstop` e rilanciare |
+| `process_bag.sh` esce con "a ROS master is already running" | simulazione attiva o un'altra sessione di post-processing in corso | fare `tstop` (o attendere l'altra sessione) e rilanciare |
+| `process_bag.sh` esce con "bag file not found" | percorso errato (es. doppia estensione `.bag.bag`) | verificare il percorso del bag |

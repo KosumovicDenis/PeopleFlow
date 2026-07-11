@@ -11,9 +11,22 @@ BAG_NAME=$(basename "$BAG_FILE" .bag)
 SUBJECT_ID=${2:-0}
 MAX_DURATION=${3:-330}
 
+if [ ! -f "$BAG_FILE" ]; then
+    echo "ERROR: bag file not found: $BAG_FILE"
+    exit 1
+fi
+
 # Re-source the workspace: a shell opened before the last catkin build has a
 # stale ROS_PACKAGE_PATH and roslaunch would not resolve this package
 source "$HOME/ros_ws/devel/setup.bash"
+
+# A live ROS master (running simulation or another process_bag session) would
+# clash with this one: same node names, same topics, same output file
+if rostopic list >/dev/null 2>&1; then
+    echo "ERROR: a ROS master is already running. Stop the simulation (tstop)"
+    echo "or wait for the other process_bag session to finish, then retry."
+    exit 1
+fi
 
 echo "Processing bag: $BAG_NAME (Subject: $SUBJECT_ID, Max duration: ${MAX_DURATION}s)"
 
