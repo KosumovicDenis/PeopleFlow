@@ -72,7 +72,7 @@ Intuitivamente: la direzione del moto relativo punta verso l'ostacolo e la dista
 
 ### 3.2 Difetto alle alte velocità e correzione
 
-Il test originale utilizzava direttamente $P = A - \mathbf{V}_{rel}$, cioè lo spostamento relativo previsto in un intervallo di 1 s. Poiché la base del cono giace alla distanza dell'ostacolo — per costruzione inferiore a $d_{safe} = 2.3$ m quando il test può scattare — ogni velocità relativa superiore alla distanza corrente produce un punto $P$ **oltre** la base del triangolo: il predicato $P \in \text{cono}$ risulta falso proprio nelle situazioni più pericolose. Con agenti a 3 m/s la collisione non veniva mai rilevata e il soggetto al centro non si spostava più; lo stesso difetto generava una zona cieca anche alle velocità originali, per distanze inferiori a $\lVert\mathbf{V}_{rel}\rVert \cdot 1\,\text{s} \approx 1.3$ m.
+Il test originale utilizzava direttamente $P = A - \mathbf{V}\_{rel}$, cioè lo spostamento relativo previsto in un intervallo di 1 s. Poiché la base del cono giace alla distanza dell'ostacolo — per costruzione inferiore a $d_{safe} = 2.3$ m quando il test può scattare — ogni velocità relativa superiore alla distanza corrente produce un punto $P$ **oltre** la base del triangolo: il predicato $P \in \text{cono}$ risulta falso proprio nelle situazioni più pericolose. Con agenti a 3 m/s la collisione non veniva mai rilevata e il soggetto al centro non si spostava più; lo stesso difetto generava una zona cieca anche alle velocità originali, per distanze inferiori a $\lVert\mathbf{V}_{rel}\rVert \cdot 1\,\text{s} \approx 1.3$ m.
 
 La correzione riscala lo spostamento in modo che il punto proiettato non possa superare la base del cono, preservando l'informazione direzionale:
 
