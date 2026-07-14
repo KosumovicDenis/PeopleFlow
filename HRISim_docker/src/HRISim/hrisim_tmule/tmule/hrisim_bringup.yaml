@@ -57,13 +57,14 @@ init_cmd: |
   # robot_mode == 1: TELEOPERATION , we map the output of a teleop node (like joystick) to drive the robot -->
   # robot_mode == 2: SOCIAL mode means the robot's velocity is set by the social force just like the other agents -->
   export_default SCENARIO "scenario_tesi_2"
+  export_default SUBJECT "1" # agent at the center: 0 human, 1 robot (must match SCENARIO)
   export_default ALLOW_TASK "true"
   export_default STARTING_ELAPSED "8"
   export_default MAX_TASKTIME "60"
   export_default IS_STUCK_THRESHOLD "65"
   export_default ROBOT_MODE "1"
   export_default MAX_HUMAN_SPEED "1.5" # 1.5
-  export_default MAX_AGENT_SPEED "2.5" # m/s for all pedestrians; 0 keeps per-agent random speed (N(1.34, 0.26))
+  export_default MAX_AGENT_SPEED "2.0" # m/s for all pedestrians; 0 keeps per-agent random speed (N(1.34, 0.26))
   export_default ROBOT_RADIUS "5"
   export_default SPAWN_AGENT "true"
   export_default SPAWN_TELEOP_AGENT "false"
@@ -73,7 +74,11 @@ init_cmd: |
   export_default FORCE_SOCIAL "0.0"
 
   # Recording/analytics arguments
-  export_default MAX_DURATION "420" # seconds; bag recording stops automatically after this time
+  export_default MAX_DURATION "1260" # seconds; bag recording stops automatically after this time
+  export_default EXCITE_MOVER "false" # true: modulate the mover speed during the run (causal identifiability)
+  export_default EXC_V_MIN "1.0"
+  export_default EXC_V_MAX "2.5"
+  export_default EXC_PERIOD "30.0" # seconds between speed changes
 
   # Gazebo arguments
   export_default GAZEBO_GUI "true"
@@ -101,7 +106,7 @@ windows:
     tags: ['core']
     panes:
       - 'rosrun pedsim_gazebo_plugin pedsim_to_risk_bridge.py'
-      - 'roslaunch hrisim_risk risk.launch subject:=1' # 0 for human 1 for robot
+      - 'roslaunch hrisim_risk risk.launch subject:=$SUBJECT' # 0 for human 1 for robot
       - 'rosrun hrisim_rviz risk_visualiser.py'
   - name: robot-nav
     tags: ['robot']
@@ -125,3 +130,4 @@ windows:
     tags: ['core']
     panes:
       - 'roslaunch hrisim_recording recording_sim.launch bagname:=$SCENARIO duration:=$MAX_DURATION'
+      - 'if [ "$EXCITE_MOVER" = "true" ]; then rosrun hrisim_recording speed_excitation.py _subject:=$SUBJECT _v_min:=$EXC_V_MIN _v_max:=$EXC_V_MAX _period:=$EXC_PERIOD; fi'

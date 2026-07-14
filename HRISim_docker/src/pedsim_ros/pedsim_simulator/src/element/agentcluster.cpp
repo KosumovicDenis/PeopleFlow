@@ -69,8 +69,14 @@ QList<Agent*> AgentCluster::dissolve() {
     a->setPosition(randomizedX, randomizedY);
     a->setType(agentType);
     a->setModel(agentModel);
-    if (CONFIG.max_agent_speed > 0 && agentType != Ped::Tagent::ROBOT)
-      a->setVmax(CONFIG.max_agent_speed);
+    if (agentType != Ped::Tagent::ROBOT) {
+      double speed = CONFIG.max_agent_speed;
+      if (a->getId() == 0 && CONFIG.agent0_speed > 0)
+        speed = CONFIG.agent0_speed;
+      else if (a->getId() == 1 && CONFIG.agent1_speed > 0)
+        speed = CONFIG.agent1_speed;
+      if (speed > 0) a->setVmax(speed);
+    }
 
     // add waypoints to the agent
     foreach (Waypoint* waypoint, waypoints)

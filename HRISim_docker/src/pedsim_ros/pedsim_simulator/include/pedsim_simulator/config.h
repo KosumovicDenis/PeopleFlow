@@ -105,6 +105,10 @@ class Config : public QObject {
   // speed drawn at creation, > 0 forces every agent's vmax to this value
   double max_agent_speed;
 
+  // per-agent overrides (agent id 0/1): > 0 wins over max_agent_speed
+  double agent0_speed;
+  double agent1_speed;
+
   // robot control
   RobotMode robot_mode;
   int robot_wait_time;

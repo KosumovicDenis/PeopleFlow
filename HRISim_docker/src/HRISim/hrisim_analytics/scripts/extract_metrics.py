@@ -71,7 +71,7 @@ def compute_risk(subject: Point, obstacle: Point, subject_v: Point, obstacle_v: 
     else:
         risk_val = 1.0
 
-    return risk_val
+    return risk_val, collision
 
 class MetricsExtractor:
     def __init__(self):
@@ -155,13 +155,14 @@ class MetricsExtractor:
         else: # Human subject
             subj_p, subj_v, obst_p, obst_v = Point(h_pos_n[0], h_pos_n[1]), Point(h_vel_n[0], h_vel_n[1]), Point(r_pos_n[0], r_pos_n[1]), Point(r_vel_n[0], r_vel_n[1])
 
-        recalculated_risk = compute_risk(subj_p, obst_p, subj_v, obst_v)
+        recalculated_risk, collision = compute_risk(subj_p, obst_p, subj_v, obst_v)
 
         row = {
             'Timestamp': curr_time,
             'Vr': r_v_noisy,
             'Vh': h_v_noisy,
-            'Risk': recalculated_risk
+            'Risk': recalculated_risk,
+            'Collision': int(collision)
         }
         self.data_rows.append(row)
         
@@ -174,15 +175,11 @@ class MetricsExtractor:
             return
             
         df = pd.DataFrame(self.data_rows)
-        
-        # Apply Markovian Shifts (risk lags by 1, subject velocity by 2)
-        df['Risk'] = df['Risk'].shift(1)
-        subject_col = 'Vr' if self.subject_mode == 1 else 'Vh'
-        df[subject_col] = df[subject_col].shift(2)
-        
-        # Trim 2 rows from head and tail
-        df = df.iloc[2:-2]
-        
+
+        # No hand-made lag shifts: the columns are time-aligned and the causal
+        # discovery searches the lags itself (they were tuned to the old
+        # risk formula, which embedded the subject velocity)
+
         df.to_csv(self.output_file, index=False)
         rospy.loginfo(f"Saved {len(df)} rows to {self.output_file}")
 

@@ -38,8 +38,10 @@ I parametri della sessione si impostano in `hrisim_tmule/tmule/hrisim_bringup.ya
 | Variabile | Default | Significato |
 |---|---:|---|
 | `SCENARIO` | `scenario_tesi_2` | scenario pedsim da caricare (e nome del bag prodotto) |
+| `SUBJECT` | `1` | agente al centro: `0` umano, `1` robot — deve combaciare con lo scenario |
 | `MAX_AGENT_SPEED` | `0.0` | velocità dei pedoni in m/s; `0` = velocità casuale per agente $\mathcal{N}(1.34, 0.26)$ |
 | `MAX_DURATION` | `330` | durata della registrazione in secondi; il bag si chiude da solo allo scadere |
+| `EXCITE_MOVER` | `false` | se `true`, modula la velocità del solo mover durante la run (vedi §3.3) |
 | `ROBOT_MODE` | `1` | modalità di controllo del robot (0 CONTROLLED, 1 TELEOPERATION, 2 SOCIAL) |
 
 Esempio di configurazione al volo, senza modificare lo yaml:
@@ -54,7 +56,7 @@ tstart
 
 Gli esperimenti prevedono due configurazioni: **umano al centro** (`subject = 0`) o **robot al centro** (`subject = 1`). Il valore del soggetto deve essere coerente in due punti:
 
-1. **finestra `risk` del tmule** — `roslaunch hrisim_risk risk.launch subject:=1`: determina sia il riferimento del calcolo del rischio, sia quale agente il `PedsimBridge` blocca a `WP_CENTER`;
+1. **variabile `SUBJECT` del tmule** — usata dalla finestra `risk` (e dall'eccitazione, §3.3): determina il riferimento del calcolo del rischio e quale agente il `PedsimBridge` blocca a `WP_CENTER`;
 2. **post-processing** — secondo argomento di `process_bag.sh` (Sezione 6).
 
 Un disallineamento tra i due produce un dataset in cui il rischio è riferito all'agente sbagliato.
@@ -69,6 +71,12 @@ rosrun dynamic_reconfigure dynparam set /pedsim_simulator max_agent_speed 1.5
 ```
 
 Nota: se la velocità cambia durante una registrazione, il bag conterrà tratti a velocità diverse; per esperimenti controllati impostare la velocità **prima** di avviare la sessione.
+
+### 3.3 Eccitazione del mover (identificabilità causale)
+
+Con la velocità del mover **costante**, il legame causale $V_{mover} \to Risk$ non è identificabile (una causa senza varianza non produce segnale) e i rallentamenti sistematici del tour generano falsi archi $Risk \to V_{mover}$. Con `EXCITE_MOVER=true`, lo script `speed_excitation.py` estrae periodicamente una nuova velocità in `[EXC_V_MIN, EXC_V_MAX]` (default `[1.0, 2.5]` m/s, ogni `EXC_PERIOD` = 30 s) e la applica **al solo mover** tramite gli override per-agente di pedsim (`agent0_speed`/`agent1_speed`); l'agente al centro non è toccato. La variazione esogena rende identificabile l'arco vero e soffoca il confonditore di fase.
+
+Per le registrazioni destinate alla causal discovery: `EXCITE_MOVER=true` in entrambi gli scenari, stessi parametri di eccitazione.
 
 ## 4. Esecuzione
 
@@ -144,14 +152,14 @@ Campionamento a 10 Hz, colonne:
 | `Vr` | modulo della velocità del robot (m/s), con rumore |
 | `Vh` | modulo della velocità dell'umano (m/s), con rumore |
 | `Risk` | rischio $\in [0,1]$ riferito al soggetto (nuova formulazione) |
+| `Collision` | flag binario di collisione imminente (cono + soglia): il mediatore che fa reagire l'agente al centro |
 
 Le colonne di velocità sono sempre riferite allo stesso agente (`Vr` robot, `Vh` umano), indipendentemente da chi ricopre il ruolo di soggetto; è il parametro `subject` a stabilire a chi è riferito il rischio.
 
 Trasformazioni applicate dall'estrattore:
 
 - **rumore gaussiano** su posizioni e velocità ($\sigma = 0.05$) prima del ricalcolo del rischio, per simulare l'incertezza di percezione;
-- **shift markoviani**: `Risk` ritardato di 1 campione, la velocità del **soggetto** (`Vr` se `subject=1`, `Vh` se `subject=0`) di 2 campioni (allineamento causale delle serie);
-- **trim** di 2 righe in testa e in coda (rimozione dei NaN introdotti dagli shift).
+- **nessuno shift manuale**: le serie sono allineate nel tempo; i lag causali vengono cercati dall'algoritmo di causal discovery (gli shift erano tarati sulla vecchia formula del rischio, che incorporava la velocità del soggetto).
 
 ## 7. Checklist rapida per una run
 

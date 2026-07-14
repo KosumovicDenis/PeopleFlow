@@ -918,8 +918,9 @@
   </agent>
 
   <!-- id=1 -->
-  <agent x="1.0" y="1.0" n="1" dx="0.2" dy="0.2" type="1" model="modello_robot">
+  <agent x="1.0" y="1.0" n="1" dx="0" dy="0" type="1" model="modello_robot">
     <addwaypoint id="WP_SHELF"/>
     <addwaypoint id="WP_BOXES"/>
   </agent>
 </scenario>
+

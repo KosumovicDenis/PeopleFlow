@@ -187,13 +187,19 @@ void Simulator::reconfigureCB(pedsim_simulator::PedsimSimulatorConfig& config,
   CONFIG.setAlongWallForce(config.force_wall);
 
   // update the max speed of all (non-robot) agents currently in the scene;
-  // newly spawned agents pick it up in AgentCluster::dissolve()
+  // newly spawned agents pick it up in AgentCluster::dissolve().
+  // Per-agent overrides (agent0/1_speed) win over the global value.
   CONFIG.max_agent_speed = config.max_agent_speed;
-  if (CONFIG.max_agent_speed > 0) {
-    for (Agent* agent : SCENE.getAgents()) {
-      if (agent->getType() != Ped::Tagent::ROBOT)
-        agent->setVmax(CONFIG.max_agent_speed);
-    }
+  CONFIG.agent0_speed = config.agent0_speed;
+  CONFIG.agent1_speed = config.agent1_speed;
+  for (Agent* agent : SCENE.getAgents()) {
+    if (agent->getType() == Ped::Tagent::ROBOT) continue;
+    double speed = CONFIG.max_agent_speed;
+    if (agent->getId() == 0 && CONFIG.agent0_speed > 0)
+      speed = CONFIG.agent0_speed;
+    else if (agent->getId() == 1 && CONFIG.agent1_speed > 0)
+      speed = CONFIG.agent1_speed;
+    if (speed > 0) agent->setVmax(speed);
   }
 
   // puase or unpause the simulation
