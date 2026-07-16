@@ -1,6 +1,8 @@
 # Stato del progetto e visione
 
-**Ultimo aggiornamento: 2026-07-14**
+**Ultimo aggiornamento: 2026-07-16** — per il confronto conclusivo delle tre
+formulazioni del rischio, con figure e verdetto, vedi
+[riassunto_finale.md](riassunto_finale.md).
 
 Questo documento fotografa lo stato della pipeline sperimentale e le decisioni
 metodologiche prese, per valutare rapidamente dove siamo e cosa resta.
